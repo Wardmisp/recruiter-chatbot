@@ -1,0 +1,31 @@
+<resources>
+    <string name="title">L’assistant de Rémi</string>
+    <string name="subtitle">Questions sur mon parcours, mes compétences ou ma disponibilité</string>
+    <string name="disclaimer">Réponses générées par une IA open-source auto-hébergée, uniquement à partir de mon CV. Elles peuvent contenir des erreurs.</string>
+    <string name="welcome">Bonjour ! Je suis l’assistant de Rémi. Posez-moi vos questions sur son parcours, ses compétences ou sa disponibilité. Je réponds en français ou en anglais.</string>
+    <string name="suggestion_1">Quelles sont ses compétences en Kotlin ?</string>
+    <string name="suggestion_2">Parlez-moi de son expérience chez Visioglobe.</string>
+    <string name="suggestion_3">Quand est-il disponible ?</string>
+    <string name="input_placeholder">Votre question…</string>
+    <string name="send">Envoyer</string>
+    <string name="char_count">%1$d / %2$d</string>
+    <string name="thinking">Réflexion…</string>
+    <string name="checking">Connexion à l’assistant…</string>
+    <string name="unavailable">Chat indisponible, contactez-moi par mail ou LinkedIn.</string>
+    <string name="contact_email">E-mail</string>
+    <string name="contact_linkedin">LinkedIn</string>
+    <string name="retry">Réessayer</string>
+    <string name="dismiss">Fermer</string>
+    <string name="error_unavailable">Le serveur ne répond pas. Réessayez dans un instant.</string>
+    <string name="error_timeout">La réponse a pris trop de temps. Réessayez.</string>
+    <string name="error_busy">L’assistant répond déjà à d’autres visiteurs. Réessayez dans quelques secondes.</string>
+    <string name="error_rate_limited">Trop de questions d’affilée. Patientez une minute.</string>
+    <string name="error_too_long">Message trop long (1000 caractères maximum).</string>
+    <string name="tab_chat">Chat</string>
+    <string name="tab_cv">CV</string>
+    <string name="cv_intro">Téléchargez mon CV au format PDF.</string>
+    <string name="cv_en_title">CV en anglais</string>
+    <string name="cv_fr_title">CV en français</string>
+    <string name="cv_format">PDF · 1 page</string>
+    <string name="cv_open">Ouvrir</string>
+</resources>

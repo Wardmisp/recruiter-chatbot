@@ -1,0 +1,26 @@
+# Secrets : ne JAMAIS commiter
+.env
+.env.*
+!.env.example
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+
+# Réglages locaux de Claude Code (le settings.json partagé reste versionné)
+.claude/settings.local.json
+
+# Journaux
+*.log
+
+# Éditeurs / OS
+.vscode/
+.idea/
+Thumbs.db
+.DS_Store
+
+# Notes locales de Claude Code (détails réseau du serveur)
+CLAUDE.local.md

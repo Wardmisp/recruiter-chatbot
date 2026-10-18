@@ -1,0 +1,33 @@
+{
+	# Pas de redirection HTTP -> HTTPS : le port 80 n'est ni publié ni redirigé
+	auto_https disable_redirects
+}
+
+{$DOMAIN} {
+	# Certificat par challenge DNS-01 : les ports 80/443 ne sont pas joignables
+	# depuis Internet (la box traduit 38443 -> 443).
+	tls {
+		dns duckdns {env.DUCKDNS_TOKEN}
+		# Résolveurs publics pour vérifier la propagation du TXT (évite le cache DNS de la box)
+		resolvers 1.1.1.1 9.9.9.9
+	}
+
+	# Refuse les corps de requête énormes avant même qu'ils n'atteignent l'API
+	request_body {
+		max_size 64KB
+	}
+
+	# CV publics en PDF (dossier cv/ du projet, monté en lecture seule, sans listing)
+	handle_path /cv/* {
+		root * /srv/cv
+		header Cache-Control "public, max-age=3600"
+		file_server
+	}
+
+	handle {
+		reverse_proxy api:8000 {
+			# Envoie le flux SSE au client sans mise en tampon
+			flush_interval -1
+		}
+	}
+}

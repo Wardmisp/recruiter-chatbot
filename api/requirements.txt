@@ -1,0 +1,6 @@
+# Versions figées à l'étape 5 (testées le 2026-10-18)
+fastapi==0.146.0
+uvicorn[standard]==0.54.0
+httpx==0.28.1
+slowapi==0.1.10
+pydantic-settings==2.16.0

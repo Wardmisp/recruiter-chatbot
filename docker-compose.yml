@@ -1,0 +1,90 @@
+# Seul le service caddy publie un port. ollama et api ne sont joignables
+# que depuis les réseaux Docker internes.
+
+services:
+  ollama:
+    image: ollama/ollama:latest
+    restart: unless-stopped
+    environment:
+      - OLLAMA_KEEP_ALIVE=10m
+    volumes:
+      - ollama_data:/root/.ollama
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    networks:
+      - backend
+    # AUCUN port publié (11434 reste interne)
+
+  api:
+    build: ./api
+    restart: unless-stopped
+    environment:
+      - OLLAMA_URL=http://ollama:11434
+      - OLLAMA_MODEL=${OLLAMA_MODEL}
+      - OLLAMA_NUM_CTX=${OLLAMA_NUM_CTX}
+      - ALLOWED_ORIGIN=${ALLOWED_ORIGIN}
+      - RATE_LIMIT=${RATE_LIMIT}
+      - MAX_MESSAGE_CHARS=${MAX_MESSAGE_CHARS}
+      - MAX_HISTORY_MESSAGES=${MAX_HISTORY_MESSAGES}
+      - MAX_OUTPUT_TOKENS=${MAX_OUTPUT_TOKENS}
+      - MAX_CONCURRENT_GENERATIONS=${MAX_CONCURRENT_GENERATIONS}
+      - REQUEST_TIMEOUT_SECONDS=${REQUEST_TIMEOUT_SECONDS}
+      - KNOWLEDGE_FILE=/app/knowledge/parcours.md
+      - KNOWLEDGE_FILE_EN=/app/knowledge/parcours.en.md
+    volumes:
+      - ./knowledge:/app/knowledge:ro
+    depends_on:
+      - ollama
+    networks:
+      - backend
+      - web
+    # AUCUN port publié (8000 reste interne, accès via Caddy uniquement)
+
+  caddy:
+    build: ./caddy
+    restart: unless-stopped
+    ports:
+      - "443:443"
+    environment:
+      - DOMAIN=${DOMAIN}
+      - DUCKDNS_TOKEN=${DUCKDNS_TOKEN}
+    volumes:
+      - ./caddy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - ./cv:/srv/cv:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - api
+    networks:
+      - web
+
+  duckdns:
+    image: curlimages/curl:8.16.0
+    restart: unless-stopped
+    entrypoint: ["/bin/sh", "/duckdns/update.sh"]
+    environment:
+      - DOMAIN=${DOMAIN}
+      - DUCKDNS_TOKEN=${DUCKDNS_TOKEN}
+      - DUCKDNS_INTERVAL_SECONDS=${DUCKDNS_INTERVAL_SECONDS}
+    volumes:
+      - ./duckdns/update.sh:/duckdns/update.sh:ro
+    networks:
+      - updater
+    # AUCUN port publié ; réseau séparé (ne voit ni l'API ni Ollama)
+
+# backend : ollama <-> api   |   web : api <-> caddy   |   updater : sortie Internet de duckdns
+# Caddy ne voit donc jamais Ollama directement.
+networks:
+  backend:
+  web:
+  updater:
+
+volumes:
+  ollama_data:
+  caddy_data:
+  caddy_config:
