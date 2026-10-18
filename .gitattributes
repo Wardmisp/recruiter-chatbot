@@ -1,0 +1,12 @@
+# Fins de ligne LF partout : les scripts tournent dans des conteneurs Linux
+# (un update.sh en CRLF y échouerait), quel que soit le réglage core.autocrlf du poste.
+* text=auto eol=lf
+
+# Scripts Windows
+*.bat text eol=crlf
+*.cmd text eol=crlf
+
+# Binaires : jamais modifiés par Git
+*.png binary
+*.jar binary
+*.pdf binary
