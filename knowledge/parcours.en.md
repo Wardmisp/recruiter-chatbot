@@ -55,7 +55,7 @@ He is open to a cross-border contract or to relocation.
 ### Consultant Engineer — ALTEN (April 2021 – August 2022, 1 year 5 months)
 
 - Software and database testing assignment in SQL (test case design, data validation),
-  in Boulogne-Billancourt.
+  at MBDA (leader européen de l’industrie de la défense).
 - VR Developer: authentication system adapted for virtual reality on Oculus Quest 2,
   using Unreal Engine (C++, Blueprint), in Sèvres.
 

@@ -57,7 +57,7 @@ Il est disponible pour un contrat frontalier ou une relocation.
 ### Ingénieur consultant — ALTEN (avril 2021 – août 2022, 1 an et 5 mois)
 
 - Mission de test logiciel et de base de données en SQL (conception de cas de test,
-  validation des données), à Boulogne-Billancourt.
+  validation des données) chez MBDA (leader européen de l’industrie de la défense).
 - Développeur VR : système d'authentification adapté à la réalité virtuelle sur Oculus Quest 2,
   avec Unreal Engine (C++, Blueprint), à Sèvres.
 
