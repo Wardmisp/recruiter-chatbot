@@ -6,7 +6,7 @@
 ![FastAPI](https://img.shields.io/badge/FastAPI-0.146-009688?logo=fastapi&logoColor=white)
 ![Ollama](https://img.shields.io/badge/LLM-Qwen3_14B_via_Ollama-black)
 
-**Live demo: [wardmisp.github.io/recruiter-chatbot](https://wardmisp.github.io/recruiter-chatbot/)** — click the chat bubble.
+**Live demo: [wardmisp.github.io/recruiter-chatbot](https://wardmisp.github.io/recruiter-chatbot/)** — the assistant is right on the page.
 
 > 🇫🇷 **En bref** — Un assistant IA qui répond aux questions des recruteurs sur mon parcours, en français
 > ou en anglais, **uniquement à partir de mon CV**. Le modèle de langage open-source (Qwen3 14B) tourne sur
@@ -34,7 +34,7 @@ token by token.
 ```mermaid
 flowchart LR
     subgraph Clients
-        W["Web page<br/>(GitHub Pages)<br/>chat bubble → iframe"]
+        W["Web page<br/>(GitHub Pages)<br/>inline preview → iframe"]
         A["Android app"]
     end
 
@@ -68,7 +68,7 @@ through a **DNS-01 challenge** because ports 80/443 are not reachable from the I
 | **Backend** | Python, FastAPI, Server-Sent Events, httpx (async streaming to Ollama), slowapi (per-IP rate limiting), pydantic-settings |
 | **LLM** | Ollama, Qwen3 14B (Q4), thinking mode, runs on an NVIDIA RTX 5080 (16 GB VRAM) |
 | **Infrastructure** | Docker Compose, Caddy 2 built with `caddy-dns/duckdns` (xcaddy), Let's Encrypt DNS-01, DuckDNS dynamic DNS |
-| **Web page** | Static HTML/CSS/JS, dependency-free chat widget, light/dark themes |
+| **Web page** | Static HTML/CSS/JS without dependencies, self-hosted fonts (Fraunces, Public Sans), embeddable chat bubble (`chat-widget.js`) |
 | **CI/CD** | GitHub Actions: shared-code tests, web build, deployment to GitHub Pages |
 
 ## Notable design choices
@@ -92,9 +92,11 @@ small, unit-tested `SseParser` and updates a `StateFlow` consumed by Compose.
 generation timeout, a concurrency limit (HTTP 503 `busy` beyond it), CORS restricted to the site origin,
 and logs that never contain IP addresses or message contents.
 
-**A widget that costs nothing until it is used.** The Compose app weighs a few megabytes (Skiko
-rendering engine), so the page only loads a 5 KB script. The app is loaded in an `<iframe>` on the
-first click, which also isolates it from the host page's styles. On phones, the panel is full screen.
+**A chat that costs nothing until it is used.** The Compose app weighs a few megabytes (Skiko
+rendering engine), so the page shows a lightweight HTML copy of its welcome screen, styled with the
+same theme. The real app replaces it in an `<iframe>` on the first interaction, and a suggestion
+clicked in the copy is forwarded to it (`chat/?q=…`). Returning visitors with a saved conversation
+get the app directly.
 
 **Configuration over code.** Every limit, the model tag, the allowed origins and the domain come from
 environment variables (`.env`, never committed). The knowledge file is re-read on each request, so the
@@ -164,6 +166,7 @@ The page can also open the panel from its own buttons with `window.RecruiterChat
 The source code is released under the [MIT License](LICENSE). My personal content — the background
 files in `knowledge/`, the resumes in `cv/`, the portrait photo and the biographical texts of the presentation page — is
 not covered and remains all rights reserved. To reuse the project, swap in your own content.
+The Fraunces and Public Sans fonts are distributed under the SIL Open Font License ([licenses/](licenses)).
 
 ## About
 

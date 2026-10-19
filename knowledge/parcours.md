@@ -30,6 +30,7 @@ Il est disponible pour un contrat frontalier ou une relocation.
 
 ### Développeur d'applications mobiles — Référent technique Android — Alpes Contrôles (depuis mars 2026)
 
+- Application mobile déployée sur une flotte de plus de 1 000 appareils.
 - Référent technique Android : garant des choix d'architecture et des bonnes pratiques
   (Clean Architecture, principes SOLID) sur le périmètre mobile.
 - A implémenté un agent vocal conversationnel basé sur l'API Realtime d'OpenAI
@@ -42,8 +43,8 @@ Il est disponible pour un contrat frontalier ou une relocation.
 
 ### Ingénieur logiciel — Visioglobe (octobre 2022 – décembre 2025, 3 ans et 3 mois)
 
-- A développé et maintenu une bibliothèque Android de navigation intérieure, déployée chez
-  plus de 30 clients internationaux, dont les aéroports de Miami et de Doha.
+- A développé et maintenu une bibliothèque Android de navigation intérieure, déployée dans
+  plus de 1 000 lieux, dont les aéroports de Miami et de Doha.
 - A assuré le suivi technique et la correction de bugs sur des applications Android/iOS en
   production, garantissant leur stabilité et leur fiabilité pour les utilisateurs finaux.
 - A conçu et maintenu une bibliothèque React Native complète (UI/UX, intégration, tests,

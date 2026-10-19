@@ -28,6 +28,7 @@ He is open to a cross-border contract or to relocation.
 
 ### Mobile Application Developer — Android Technical Lead — Alpes Contrôles (since March 2026)
 
+- Mobile application deployed on a fleet of more than 1,000 devices.
 - Android Technical Lead: owner of architecture decisions and best practices
   (Clean Architecture, SOLID principles) across the mobile scope.
 - Implemented a conversational voice agent based on the OpenAI Realtime API
@@ -40,8 +41,8 @@ He is open to a cross-border contract or to relocation.
 
 ### Software Engineer — Visioglobe (October 2022 – December 2025, 3 years 3 months)
 
-- Developed and maintained an Android indoor-navigation library, deployed at more than
-  30 international clients, including Miami and Doha airports.
+- Developed and maintained an Android indoor-navigation library, deployed in more than
+  1,000 venues, including Miami and Doha airports.
 - Handled technical follow-up and bug fixing on production Android/iOS applications,
   ensuring stability and reliability for end users.
 - Designed and maintained a full-featured React Native library (UI/UX, integration, testing,

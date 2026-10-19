@@ -18,7 +18,7 @@
   style.textContent = `
     .rc-bubble, .rc-close {
       position: fixed; z-index: 2147483000; border: none; cursor: pointer;
-      background: #2e5a88; color: #fff; font: 600 15px/1 system-ui, sans-serif;
+      background: #161616; color: #f2f1ed; font: 600 15px/1 system-ui, sans-serif;
       box-shadow: 0 6px 20px rgba(0, 0, 0, .25);
     }
     .rc-bubble {
@@ -26,12 +26,12 @@
       border-radius: 28px; display: flex; align-items: center; gap: 10px;
     }
     .rc-bubble svg { width: 24px; height: 24px; flex: none; }
-    .rc-bubble:hover, .rc-close:hover { background: #244a72; }
-    .rc-bubble:focus-visible, .rc-close:focus-visible { outline: 3px solid #9cc3f0; outline-offset: 2px; }
+    .rc-bubble:hover, .rc-close:hover { background: #262522; }
+    .rc-bubble:focus-visible, .rc-close:focus-visible { outline: 3px solid #f06b45; outline-offset: 2px; }
     .rc-panel {
       position: fixed; z-index: 2147482999; right: 20px; bottom: 20px;
       width: 420px; height: min(680px, calc(100vh - 40px));
-      border-radius: 16px; overflow: hidden; background: #fff;
+      border-radius: 16px; overflow: hidden; background: #161616;
       box-shadow: 0 12px 40px rgba(0, 0, 0, .3);
     }
     .rc-panel iframe { width: 100%; height: 100%; border: 0; display: block; }
