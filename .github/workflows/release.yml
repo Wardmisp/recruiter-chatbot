@@ -36,7 +36,8 @@ jobs:
         env:
           ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
         run: |
-          echo "$ANDROID_KEYSTORE_BASE64" | base64 -d > "$RUNNER_TEMP/release.jks"
+          # --ignore-garbage : tolère les \r\n ajoutés par PowerShell lors de l'envoi du secret.
+          echo "$ANDROID_KEYSTORE_BASE64" | base64 --decode --ignore-garbage > "$RUNNER_TEMP/release.jks"
           echo "ANDROID_KEYSTORE_PATH=$RUNNER_TEMP/release.jks" >> "$GITHUB_ENV"
 
       - name: Tests du code partagé
