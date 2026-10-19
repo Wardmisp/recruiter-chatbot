@@ -2,6 +2,9 @@
 .env
 .env.*
 !.env.example
+# Clés de signature Android
+*.jks
+*.keystore
 
 # Python
 __pycache__/
