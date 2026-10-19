@@ -101,7 +101,7 @@ private fun TitleBlock(modifier: Modifier) {
             stringResource(Res.string.title),
             style = MaterialTheme.typography.titleMedium,
             fontWeight = FontWeight.SemiBold,
-            color = MaterialTheme.colorScheme.primary,
+            color = MaterialTheme.colorScheme.onSurface,
         )
         Text(
             stringResource(Res.string.subtitle),

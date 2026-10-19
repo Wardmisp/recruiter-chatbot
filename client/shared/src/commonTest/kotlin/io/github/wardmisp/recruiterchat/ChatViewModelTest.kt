@@ -232,4 +232,20 @@ class ChatViewModelTest {
         val messages = listOf(ChatMessage(1, Role.Assistant, "Salut", NOW))
         assertEquals(messages, ChatHistoryJson.decode(ChatHistoryJson.encode(messages)))
     }
+
+    @Test
+    fun initialQuestionIsSentOnceTheServerIsAvailable() {
+        val service = FakeChatService(events = listOf(ChatEvent.Token("Réponse"), ChatEvent.Done))
+        val viewModel = ChatViewModel(service, FakeHistoryStore(), now = { NOW }, initialQuestion = "Bonjour")
+
+        assertEquals(listOf(Role.User to "Bonjour", Role.Assistant to "Réponse"), viewModel.state.value.texts())
+    }
+
+    @Test
+    fun initialQuestionIsDroppedWhenTheServerIsDown() {
+        val service = FakeChatService(available = false)
+        ChatViewModel(service, FakeHistoryStore(), now = { NOW }, initialQuestion = "Bonjour")
+
+        assertTrue(service.requests.isEmpty())
+    }
 }

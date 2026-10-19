@@ -47,6 +47,8 @@ class ChatViewModel(
     private val service: ChatService = ChatApi(),
     private val history: ChatHistoryStore = ChatHistoryStore.None,
     private val now: () -> Long = { Clock.System.now().toEpochMilliseconds() },
+    /** Question à envoyer dès que le serveur répond (suggestion cliquée sur la page d'accueil). */
+    private val initialQuestion: String? = null,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(ChatUiState())
@@ -62,6 +64,7 @@ class ChatViewModel(
             // Avant la vérification du serveur : l'envoi reste impossible tant que l'historique n'est pas chargé.
             restoreHistory()
             refreshServerStatus()
+            initialQuestion?.let(::send)
         }
     }
 

@@ -11,8 +11,8 @@ import io.github.wardmisp.recruiterchat.ui.MainScreen
  * qui fournissent chacun le stockage de la conversation propre à leur plateforme.
  */
 @Composable
-fun App(historyStore: ChatHistoryStore = ChatHistoryStore.None) {
+fun App(historyStore: ChatHistoryStore = ChatHistoryStore.None, initialQuestion: String? = null) {
     AppTheme {
-        MainScreen(viewModel { ChatViewModel(history = historyStore) })
+        MainScreen(viewModel { ChatViewModel(history = historyStore, initialQuestion = initialQuestion) })
     }
 }

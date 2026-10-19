@@ -4,4 +4,6 @@ html, body {
     margin: 0;
     padding: 0;
     overflow: hidden;
+    /* Fond du thème : pas d'éclair blanc pendant le chargement de l'appli. */
+    background: #161616;
 }
