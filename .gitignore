@@ -24,3 +24,6 @@ Thumbs.db
 
 # Notes locales de Claude Code (détails réseau du serveur)
 CLAUDE.local.md
+
+# Site assemblé localement (prévisualisation)
+_site/
