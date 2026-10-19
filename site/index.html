@@ -6,6 +6,14 @@
     <title>Rémi Mialon-Evan — Ingénieur mobile Android / Kotlin</title>
     <meta name="description" content="Ingénieur mobile, référent technique Android / Kotlin. Posez vos questions à mon assistant IA auto-hébergé.">
     <meta name="color-scheme" content="light dark">
+    <!-- Aperçu du lien partagé (LinkedIn, messageries) -->
+    <meta property="og:type" content="profile">
+    <meta property="og:title" content="Rémi Mialon-Evan — Ingénieur mobile Android / Kotlin">
+    <meta property="og:description" content="Référent technique Android / Kotlin. Posez vos questions sur mon parcours à mon assistant IA auto-hébergé.">
+    <meta property="og:url" content="https://wardmisp.github.io/recruiter-chatbot/">
+    <meta property="og:image" content="https://wardmisp.github.io/recruiter-chatbot/photo.jpg">
+    <meta name="twitter:card" content="summary">
+    <link rel="icon" href="photo.jpg">
     <!-- Avant tout rendu : les effets d'apparition ne masquent le contenu que si JavaScript est actif. -->
     <script>document.documentElement.classList.add("js");</script>
     <style>
@@ -69,12 +77,15 @@
 
         /* En-tête */
         .hero { display: flex; gap: 24px; align-items: center; }
+        /* Photo dans un anneau dégradé (le padding laisse voir le fond dégradé autour de l'image). */
         .avatar {
-            flex: none; width: 88px; height: 88px; border-radius: 50%;
-            display: grid; place-items: center;
+            flex: none; width: 96px; height: 96px; padding: 3px; border-radius: 50%;
             background: linear-gradient(135deg, var(--accent), var(--primary-strong));
-            color: #fff; font-size: 30px; font-weight: 700; letter-spacing: .5px;
             box-shadow: 0 8px 24px color-mix(in srgb, var(--primary) 35%, transparent);
+        }
+        .avatar img {
+            display: block; width: 100%; height: 100%; border-radius: 50%;
+            object-fit: cover; border: 3px solid var(--card); background: var(--card);
         }
         h1 { margin: 0; font-size: clamp(1.8rem, 4vw, 2.4rem); line-height: 1.15; letter-spacing: -.02em; }
         .role { margin: 6px 0 0; font-size: 1.1rem; font-weight: 600; color: var(--primary); }
@@ -163,18 +174,23 @@
                 filter .8s ease var(--delay, 0s);
         }
         .js [data-reveal].is-visible { opacity: 1; transform: none; filter: none; }
+        /* Disparition : l'élément sorti par le haut s'efface vers le haut, sans délai de cascade. */
+        .js [data-reveal][data-side="above"]:not(.is-visible) { transform: translateY(-28px) scale(.97); }
+        .js [data-reveal]:not(.is-visible) { transition-delay: 0s; }
         /* Les titres de section se resserrent en apparaissant. */
         .js h2[data-reveal] { letter-spacing: .45em; transition-property: opacity, transform, filter, letter-spacing; transition-duration: .8s, .9s, .8s, 1.1s; }
         .js h2[data-reveal].is-visible { letter-spacing: .12em; }
         @media (prefers-reduced-motion: reduce) {
-            .js [data-reveal], .js h2[data-reveal] { opacity: 1; transform: none; filter: none; letter-spacing: .12em; transition: none; }
+            .js [data-reveal], .js h2[data-reveal], .js [data-reveal][data-side]:not(.is-visible) {
+                opacity: 1; transform: none; filter: none; letter-spacing: .12em; transition: none;
+            }
             .btn { transition: none; }
         }
 
         @media (max-width: 640px) {
             main { padding-top: 76px; }
             .hero { flex-direction: column; align-items: flex-start; gap: 16px; }
-            .avatar { width: 72px; height: 72px; font-size: 25px; }
+            .avatar { width: 80px; height: 80px; }
             .timeline li { grid-template-columns: 1fr; gap: 6px; }
             .timeline .when { padding-top: 0; text-align: left; }
             .actions .btn { flex: 1 1 auto; justify-content: center; }
@@ -190,7 +206,7 @@
 <main>
     <header>
         <div class="hero" data-reveal>
-            <div class="avatar" aria-hidden="true">RM</div>
+            <div class="avatar"><img src="photo.jpg" alt="Rémi Mialon-Evan" width="90" height="90"></div>
             <div>
                 <h1>Rémi Mialon-Evan</h1>
                 <p class="role" data-i18n="role"></p>
@@ -420,7 +436,7 @@
     }));
     render();
 
-    // Apparition au scroll : les enfants d'un groupe [data-stagger] apparaissent en cascade.
+    // Apparition / disparition au scroll : les enfants d'un groupe [data-stagger] apparaissent en cascade.
     document.querySelectorAll("[data-stagger]").forEach((group) => {
         [...group.children].forEach((child, index) => {
             child.setAttribute("data-reveal", "");
@@ -431,9 +447,10 @@
     if ("IntersectionObserver" in window) {
         const observer = new IntersectionObserver((entries) => {
             entries.forEach((entry) => {
-                if (!entry.isIntersecting) return;
-                entry.target.classList.add("is-visible");
-                observer.unobserve(entry.target);
+                // Côté de sortie : l'élément s'éloigne du bord franchi, ce qui évite tout clignotement
+                // quand il reste à cheval sur ce bord.
+                entry.target.dataset.side = entry.boundingClientRect.top < 0 ? "above" : "below";
+                entry.target.classList.toggle("is-visible", entry.isIntersecting);
             });
         }, { rootMargin: "0px 0px -8% 0px", threshold: 0.12 });
         revealed.forEach((el) => observer.observe(el));

@@ -162,7 +162,7 @@ The page can also open the panel from its own buttons with `window.RecruiterChat
 ## License
 
 The source code is released under the [MIT License](LICENSE). My personal content — the background
-files in `knowledge/`, the resumes in `cv/` and the biographical texts of the presentation page — is
+files in `knowledge/`, the resumes in `cv/`, the portrait photo and the biographical texts of the presentation page — is
 not covered and remains all rights reserved. To reuse the project, swap in your own content.
 
 ## About
