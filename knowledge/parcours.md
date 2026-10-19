@@ -31,6 +31,8 @@ Il est disponible pour un contrat frontalier ou une relocation.
 ### Développeur d'applications mobiles — Référent technique Android — Alpes Contrôles (depuis mars 2026)
 
 - Application mobile déployée sur une flotte de plus de 1 000 appareils.
+- Au sein d'une équipe de 8 experts, dans une DSI d'une quarantaine de personnes, pour une
+  entreprise de plus de 1 000 collaborateurs.
 - Référent technique Android : garant des choix d'architecture et des bonnes pratiques
   (Clean Architecture, principes SOLID) sur le périmètre mobile.
 - A implémenté un agent vocal conversationnel basé sur l'API Realtime d'OpenAI
@@ -43,10 +45,12 @@ Il est disponible pour un contrat frontalier ou une relocation.
 
 ### Ingénieur logiciel — Visioglobe (octobre 2022 – décembre 2025, 3 ans et 3 mois)
 
-- A développé et maintenu une bibliothèque Android de navigation intérieure, déployée dans
+- Équipe de 6 développeurs, dans une entreprise de 18 personnes.
+- A assuré la maintenance et l'évolution de la bibliothèque Android de navigation intérieure, déployée dans
   plus de 1 000 lieux, dont les aéroports de Miami et de Doha.
 - A assuré le suivi technique et la correction de bugs sur des applications Android/iOS en
   production, garantissant leur stabilité et leur fiabilité pour les utilisateurs finaux.
+- A assuré la maintenance de la bibliothèque iOS de navigation intérieure.
 - A conçu et maintenu une bibliothèque React Native complète (UI/UX, intégration, tests,
   déploiement), intégrée sur plusieurs applications du portefeuille produit, en appliquant la
   Clean Architecture et l'optimisation des performances.
@@ -87,18 +91,20 @@ Il est disponible pour un contrat frontalier ou une relocation.
 ## Compétences techniques
 
 - Langages : Kotlin, Java, Swift, JavaScript/TypeScript, SQL, C++, Python.
-- Mobile : Android SDK, Jetpack Compose, Clean Architecture, MVVM, Room, Hilt, React Native,
-  Kotlin Multiplatform (KMP), iOS/Swift.
+- Mobile : Android SDK, Jetpack Compose, Coroutines / Flow, Clean Architecture, MVVM, Room, Hilt,
+  Retrofit, Ktor, Firebase, publication sur le Play Store, accessibilité, sécurité mobile,
+  React Native, Kotlin Multiplatform (KMP), iOS/Swift.
 - IA et Data : Machine Learning, LLM, RAG, OpenAI Realtime API (Speech-to-Speech), Llama,
   analyse de données (Data Analysis), TensorFlow Lite.
-- Backend : Python, FastAPI.
-- Outils et méthodes : Git/GitLab, GitLab CI/CD, Supabase, Agile (Scrum, Kanban), Jira,
-  tests unitaires et automatisés.
+- Backend : Python, FastAPI, Supabase.
+- Outils et méthodes : Git/GitLab, GitLab CI/CD, Agile (Scrum, Kanban), Jira,
+  tests unitaires et automatisés (JUnit, MockK, tests d'interface Jetpack Compose).
 - Autres : Unreal Engine (C++, Blueprint), réalité virtuelle (Oculus Quest 2).
 
 ## Formation
 
-- Diplôme d'ingénieur, spécialisation Big Data — ECE Paris (2018 – 2021).
+- Diplôme d'ingénieur (grade de Master, titre accrédité par la CTI), spécialisation Big Data —
+  ECE Paris (2018 – 2021).
 - Classe préparatoire aux grandes écoles (CPGE MP) — Lycée Pothier (2016 – 2018).
 
 ## Certifications
@@ -109,8 +115,9 @@ Il est disponible pour un contrat frontalier ou une relocation.
 ## Langues
 
 - Français : langue maternelle.
-- Anglais : courant (TOEFL 98/120).
-- Allemand : notions (niveau A2).
+- Anglais : courant, niveau entre B2 et C1 (environ C1) ; TOEFL 98/120.
+- Allemand : notions (niveau A2). Peut travailler en Suisse alémanique (Zurich, Bâle) si
+  l'environnement de travail est en anglais.
 
 ## Centres d'intérêt (hors code)
 
@@ -126,12 +133,40 @@ Il est disponible pour un contrat frontalier ou une relocation.
 - En France : mobile dans les Alpes, et ouvert au télétravail complet ou quasi complet
   pour un poste ailleurs en France.
 - À l'étranger : disponible pour un contrat frontalier ou une relocation.
-- Nationalité française, éligible à l'accord de libre circulation des personnes UE/Suisse,
-  et autorisé à travailler dans l'Espace économique européen (EEE), dont la Norvège.
+- Pour un poste en Suisse : il vivrait côté français, près de la frontière, en tant que
+  frontalier.
+- Permis de travail suisse : il n'en possède pas encore. Un permis G (frontalier) reste
+  nécessaire, mais en tant que ressortissant français il bénéficie de l'accord de libre
+  circulation des personnes UE/Suisse : le permis est délivré sur demande de l'employeur,
+  sans contingent, sans visa et sans parrainage (sponsoring).
+- Suisse alémanique (Zurich, Bâle) : possible uniquement si l'environnement de travail est
+  en anglais.
+- Espace économique européen (EEE, dont la Norvège ; la Suisse n'en fait pas partie) :
+  autorisé à travailler sans visa ni permis, en tant que citoyen de l'Union européenne.
+- Canada : il ne dispose pas de permis de travail ; un poste au Canada nécessiterait
+  l'appui de l'employeur pour l'obtenir.
+
+## Conditions de travail recherchées
+
+- Taux d'activité : 100 %.
+- Types de contrat : CDI ou CDD ; freelance envisageable.
+- Télétravail : négociable ; idéalement 2 jours par semaine, après une période d'au moins
+  un mois sur place.
+- Prétentions salariales : à discuter directement avec lui (par e-mail ou via LinkedIn).
+- Références : disponibles sur demande.
+
+## Secteurs
+
+- Expérience sectorielle : aéroports et navigation intérieure (Visioglobe), contrôle technique
+  et inspection (Alpes Contrôles), défense (MBDA, via ALTEN).
+- En Suisse : préférence pour la medtech et les projets à enjeux de souveraineté ; ouvert à
+  d'autres propositions.
+- Pourquoi la Suisse : la qualité de vie et la montagne.
 
 ## Disponibilité
 
-Il est disponible sous une semaine.
+- Disponible pour commencer au plus tard fin novembre 2026.
+- Préavis de 3 mois à partir de novembre 2026.
 
 ## Contact
 

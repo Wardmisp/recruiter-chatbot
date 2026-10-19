@@ -29,6 +29,8 @@ He is open to a cross-border contract or to relocation.
 ### Mobile Application Developer — Android Technical Lead — Alpes Contrôles (since March 2026)
 
 - Mobile application deployed on a fleet of more than 1,000 devices.
+- Part of a team of 8 experts, within an IT department of about 40 people, in a company of
+  more than 1,000 employees.
 - Android Technical Lead: owner of architecture decisions and best practices
   (Clean Architecture, SOLID principles) across the mobile scope.
 - Implemented a conversational voice agent based on the OpenAI Realtime API
@@ -41,10 +43,12 @@ He is open to a cross-border contract or to relocation.
 
 ### Software Engineer — Visioglobe (October 2022 – December 2025, 3 years 3 months)
 
-- Developed and maintained an Android indoor-navigation library, deployed in more than
+- Team of 6 developers, in a company of 18 people.
+- Maintained and evolved the Android indoor-navigation library, deployed in more than
   1,000 venues, including Miami and Doha airports.
 - Handled technical follow-up and bug fixing on production Android/iOS applications,
   ensuring stability and reliability for end users.
+- Maintained the iOS indoor-navigation library.
 - Designed and maintained a full-featured React Native library (UI/UX, integration, testing,
   deployment), reused across several products in the portfolio, applying Clean Architecture
   and performance optimization.
@@ -56,7 +60,7 @@ He is open to a cross-border contract or to relocation.
 ### Consultant Engineer — ALTEN (April 2021 – August 2022, 1 year 5 months)
 
 - Software and database testing assignment in SQL (test case design, data validation),
-  at MBDA (leader européen de l’industrie de la défense).
+  at MBDA (European leader in the defense industry).
 - VR Developer: authentication system adapted for virtual reality on Oculus Quest 2,
   using Unreal Engine (C++, Blueprint), in Sèvres.
 
@@ -84,18 +88,20 @@ He is open to a cross-border contract or to relocation.
 ## Technical skills
 
 - Languages: Kotlin, Java, Swift, JavaScript/TypeScript, SQL, C++, Python.
-- Mobile: Android SDK, Jetpack Compose, Clean Architecture, MVVM, Room, Hilt, React Native,
-  Kotlin Multiplatform (KMP), iOS/Swift.
+- Mobile: Android SDK, Jetpack Compose, Coroutines / Flow, Clean Architecture, MVVM, Room, Hilt,
+  Retrofit, Ktor, Firebase, Play Store publishing, accessibility, mobile security,
+  React Native, Kotlin Multiplatform (KMP), iOS/Swift.
 - AI and Data: Machine Learning, LLM, RAG, OpenAI Realtime API (Speech-to-Speech), Llama,
   Data Analysis, TensorFlow Lite.
-- Backend: Python, FastAPI.
-- Tools and methods: Git/GitLab, GitLab CI/CD, Supabase, Agile (Scrum, Kanban), Jira,
-  unit and automated testing.
+- Backend: Python, FastAPI, Supabase.
+- Tools and methods: Git/GitLab, GitLab CI/CD, Agile (Scrum, Kanban), Jira,
+  unit and automated testing (JUnit, MockK, Jetpack Compose UI tests).
 - Other: Unreal Engine (C++, Blueprint), Virtual Reality (Oculus Quest 2).
 
 ## Education
 
-- Engineering degree, Big Data specialization — ECE Paris (2018 – 2021).
+- Engineering degree (Master's level, CTI-accredited title), Big Data specialization —
+  ECE Paris (2018 – 2021).
 - Preparatory classes for Grandes Écoles (CPGE MP) — Lycée Pothier (2016 – 2018).
 
 ## Certifications
@@ -106,8 +112,9 @@ He is open to a cross-border contract or to relocation.
 ## Languages
 
 - French: native.
-- English: fluent (TOEFL 98/120).
-- German: basic (A2 level).
+- English: fluent, between B2 and C1 (about C1); TOEFL 98/120.
+- German: basic (A2 level). Can work in German-speaking Switzerland (Zurich, Basel) if the
+  working environment is in English.
 
 ## Interests (outside of coding)
 
@@ -123,12 +130,39 @@ He is open to a cross-border contract or to relocation.
 - In France: mobile within the Alps, and open to fully or almost fully remote work
   for a position elsewhere in France.
 - Abroad: open to a cross-border contract or to relocation.
-- French national, eligible under the EU/Switzerland free movement of persons agreement,
-  and eligible to work in the European Economic Area (EEA), including Norway.
+- For a position in Switzerland: he would live on the French side, near the border, as a
+  cross-border commuter.
+- Swiss work permit: he does not hold one yet. A G permit (cross-border commuter) is still
+  required, but as a French national he benefits from the EU/Switzerland free movement of
+  persons agreement: the permit is issued at the employer's request, with no quota, no visa
+  and no sponsorship.
+- German-speaking Switzerland (Zurich, Basel): possible only if the working environment is
+  in English.
+- European Economic Area (EEA, including Norway; Switzerland is not part of it): allowed to
+  work without a visa or permit, as a European Union citizen.
+- Canada: he does not hold a work permit; a position in Canada would require the
+  employer's support to obtain one.
+
+## Working conditions sought
+
+- Workload: 100% (full time).
+- Contract types: permanent or fixed-term contract; freelance possible.
+- Remote work: negotiable; ideally 2 days per week, after at least one month on site.
+- Salary expectations: to be discussed directly with him (by email or via LinkedIn).
+- References: available on request.
+
+## Industries
+
+- Industry experience: airports and indoor navigation (Visioglobe), technical inspection and
+  certification (Alpes Contrôles), defense (MBDA, through ALTEN).
+- In Switzerland: preference for medtech and projects with sovereignty stakes; open to
+  other opportunities.
+- Why Switzerland: quality of life and the mountains.
 
 ## Availability
 
-He is available within one week.
+- Available to start by the end of November 2026 at the latest.
+- 3-month notice period from November 2026 onwards.
 
 ## Contact
 
