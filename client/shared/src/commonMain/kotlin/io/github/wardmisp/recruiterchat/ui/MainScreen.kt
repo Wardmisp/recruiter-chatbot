@@ -2,6 +2,7 @@ package io.github.wardmisp.recruiterchat.ui
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -14,6 +15,7 @@ import androidx.compose.material3.PrimaryTabRow
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -23,10 +25,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import io.github.wardmisp.recruiterchat.ChatViewModel
 import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.stringResource
 import recruiterchat.shared.generated.resources.Res
+import recruiterchat.shared.generated.resources.new_conversation
 import recruiterchat.shared.generated.resources.subtitle
 import recruiterchat.shared.generated.resources.tab_chat
 import recruiterchat.shared.generated.resources.tab_cv
@@ -40,12 +44,18 @@ private enum class MainTab(val label: StringResource) {
 @Composable
 fun MainScreen(chatViewModel: ChatViewModel) {
     var selectedTab by rememberSaveable { mutableStateOf(MainTab.Chat) }
+    val chatState by chatViewModel.state.collectAsStateWithLifecycle()
 
     Surface(Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
         // Sur un grand écran (web), le contenu reste lisible au centre.
         Box(Modifier.safeDrawingPadding().imePadding(), contentAlignment = Alignment.TopCenter) {
             Column(Modifier.fillMaxHeight().widthIn(max = 760.dp).fillMaxWidth()) {
-                Header()
+                Header(
+                    // Visible seulement sur l'onglet Chat, où l'on voit ce qui sera effacé.
+                    showNewConversation = selectedTab == MainTab.Chat,
+                    newConversationEnabled = chatState.canStartNewConversation,
+                    onNewConversation = chatViewModel::newConversation,
+                )
                 PrimaryTabRow(selectedTabIndex = selectedTab.ordinal) {
                     MainTab.entries.forEach { tab ->
                         Tab(
@@ -66,8 +76,27 @@ fun MainScreen(chatViewModel: ChatViewModel) {
 }
 
 @Composable
-private fun Header() {
-    Column(Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 12.dp)) {
+private fun Header(
+    showNewConversation: Boolean,
+    newConversationEnabled: Boolean,
+    onNewConversation: () -> Unit,
+) {
+    Row(
+        Modifier.fillMaxWidth().padding(start = 16.dp, end = 8.dp, top = 12.dp, bottom = 12.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        TitleBlock(Modifier.weight(1f))
+        if (showNewConversation) {
+            TextButton(onClick = onNewConversation, enabled = newConversationEnabled) {
+                Text(stringResource(Res.string.new_conversation))
+            }
+        }
+    }
+}
+
+@Composable
+private fun TitleBlock(modifier: Modifier) {
+    Column(modifier) {
         Text(
             stringResource(Res.string.title),
             style = MaterialTheme.typography.titleMedium,

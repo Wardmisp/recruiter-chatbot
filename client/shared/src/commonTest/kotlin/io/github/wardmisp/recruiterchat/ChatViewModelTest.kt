@@ -3,6 +3,8 @@ package io.github.wardmisp.recruiterchat
 import io.github.wardmisp.recruiterchat.data.ApiMessage
 import io.github.wardmisp.recruiterchat.data.ChatError
 import io.github.wardmisp.recruiterchat.data.ChatEvent
+import io.github.wardmisp.recruiterchat.data.ChatHistoryJson
+import io.github.wardmisp.recruiterchat.data.ChatHistoryStore
 import io.github.wardmisp.recruiterchat.data.ChatService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -15,6 +17,7 @@ import kotlin.test.AfterTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFalse
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
@@ -31,6 +34,23 @@ private class FakeChatService(
         return events.asFlow()
     }
 }
+
+private class FakeHistoryStore(var saved: List<ChatMessage> = emptyList()) : ChatHistoryStore {
+    var cleared = false
+
+    override suspend fun load() = saved
+
+    override suspend fun save(messages: List<ChatMessage>) {
+        saved = messages
+    }
+
+    override suspend fun clear() {
+        saved = emptyList()
+        cleared = true
+    }
+}
+
+private const val NOW = 1_000_000_000_000L
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class ChatViewModelTest {
@@ -111,5 +131,105 @@ class ChatViewModelTest {
 
         assertEquals(1, service.requests.size)
         assertEquals(Config.MAX_MESSAGE_CHARS, service.requests.single().single().content.length)
+    }
+
+    private fun viewModelWith(
+        history: FakeHistoryStore,
+        events: List<ChatEvent> = listOf(ChatEvent.Token("Réponse"), ChatEvent.Done),
+        service: FakeChatService = FakeChatService(events = events),
+    ) = ChatViewModel(service, history, now = { NOW })
+
+    @Test
+    fun restoresTheSavedConversationAndContinuesIds() {
+        val history = FakeHistoryStore(
+            listOf(
+                ChatMessage(4, Role.User, "Ancienne question", NOW - 1000),
+                ChatMessage(5, Role.Assistant, "Ancienne réponse", NOW - 900),
+            ),
+        )
+        val service = FakeChatService(events = listOf(ChatEvent.Token("Nouvelle"), ChatEvent.Done))
+        val viewModel = viewModelWith(history, service = service)
+
+        assertEquals(
+            listOf(Role.User to "Ancienne question", Role.Assistant to "Ancienne réponse"),
+            viewModel.state.value.texts(),
+        )
+
+        viewModel.send("Suite")
+
+        val messages = viewModel.state.value.messages
+        assertEquals(listOf(4L, 5L, 6L, 7L), messages.map { it.id })
+        // Le contexte restauré est bien renvoyé au modèle.
+        assertEquals("Ancienne question", service.requests.single().first().content)
+    }
+
+    @Test
+    fun savesTheConversationOnceTheAnswerIsComplete() {
+        val history = FakeHistoryStore()
+        val viewModel = viewModelWith(history)
+
+        viewModel.send("Question")
+
+        assertEquals(
+            listOf(Role.User to "Question", Role.Assistant to "Réponse"),
+            history.saved.map { it.role to it.text },
+        )
+        assertTrue(history.saved.all { it.sentAt == NOW })
+    }
+
+    @Test
+    fun failedAnswerIsNotSaved() {
+        val history = FakeHistoryStore()
+        val viewModel = viewModelWith(history, events = listOf(ChatEvent.Failure(ChatError.Busy)))
+
+        viewModel.send("Question")
+
+        assertEquals(listOf(Role.User to "Question"), history.saved.map { it.role to it.text })
+    }
+
+    @Test
+    fun expiredConversationIsDiscarded() {
+        val old = NOW - Config.SAVED_HISTORY_MAX_AGE_MILLIS - 1
+        val history = FakeHistoryStore(listOf(ChatMessage(0, Role.User, "Trop vieux", old)))
+
+        val viewModel = viewModelWith(history)
+
+        assertTrue(viewModel.state.value.messages.isEmpty())
+        assertTrue(history.cleared)
+    }
+
+    @Test
+    fun keepsOnlyTheLastSavedMessages() {
+        val history = FakeHistoryStore()
+        val viewModel = viewModelWith(history)
+
+        repeat(Config.SAVED_MESSAGES) { viewModel.send("Q$it") }
+
+        assertEquals(Config.SAVED_MESSAGES, history.saved.size)
+        assertEquals("Réponse", history.saved.last().text)
+        assertEquals("Q${Config.SAVED_MESSAGES / 2}", history.saved.first().text)
+    }
+
+    @Test
+    fun newConversationClearsScreenAndStorage() {
+        val history = FakeHistoryStore()
+        val viewModel = viewModelWith(history)
+        assertFalse(viewModel.state.value.canStartNewConversation)
+
+        viewModel.send("Question")
+        assertTrue(viewModel.state.value.canStartNewConversation)
+        viewModel.newConversation()
+
+        assertTrue(viewModel.state.value.messages.isEmpty())
+        assertTrue(history.saved.isEmpty())
+        assertTrue(history.cleared)
+    }
+
+    @Test
+    fun unreadableJsonGivesAnEmptyConversation() {
+        assertTrue(ChatHistoryJson.decode("pas du json").isEmpty())
+        assertTrue(ChatHistoryJson.decode(null).isEmpty())
+        val messages = listOf(ChatMessage(1, Role.Assistant, "Salut", NOW))
+        assertEquals(messages, ChatHistoryJson.decode(ChatHistoryJson.encode(messages)))
     }
 }

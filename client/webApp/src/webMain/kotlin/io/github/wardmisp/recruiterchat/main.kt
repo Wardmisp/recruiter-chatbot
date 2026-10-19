@@ -5,7 +5,8 @@ import androidx.compose.ui.window.ComposeViewport
 
 @OptIn(ExperimentalComposeUiApi::class)
 fun main() {
+    val historyStore = LocalStorageChatHistoryStore()
     ComposeViewport {
-        App()
+        App(historyStore)
     }
 }

@@ -10,8 +10,9 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
 
+        val historyStore = (application as RecruiterChatApplication).historyStore
         setContent {
-            App()
+            App(historyStore)
         }
     }
 }

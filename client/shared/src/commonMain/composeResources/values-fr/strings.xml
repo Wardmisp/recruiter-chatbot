@@ -21,6 +21,7 @@
     <string name="error_busy">L’assistant répond déjà à d’autres visiteurs. Réessayez dans quelques secondes.</string>
     <string name="error_rate_limited">Trop de questions d’affilée. Patientez une minute.</string>
     <string name="error_too_long">Message trop long (1000 caractères maximum).</string>
+    <string name="new_conversation">Nouvelle conversation</string>
     <string name="tab_chat">Chat</string>
     <string name="tab_cv">CV</string>
     <string name="cv_intro">Téléchargez mon CV au format PDF.</string>

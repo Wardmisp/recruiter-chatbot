@@ -16,4 +16,10 @@ object Config {
 
     /** MAX_HISTORY_MESSAGES côté API : inutile d'envoyer plus, le serveur tronque. */
     const val MAX_HISTORY_MESSAGES = 10
+
+    /** Conversation conservée sur l'appareil du visiteur : au plus ce nombre de messages… */
+    const val SAVED_MESSAGES = 50
+
+    /** … effacée si le dernier message date de plus de 30 jours. */
+    const val SAVED_HISTORY_MAX_AGE_MILLIS = 30L * 24 * 60 * 60 * 1000
 }
