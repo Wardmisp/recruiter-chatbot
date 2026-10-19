@@ -6,6 +6,8 @@
     <title>Rémi Mialon-Evan — Ingénieur mobile Android / Kotlin</title>
     <meta name="description" content="Ingénieur mobile, référent technique Android / Kotlin. Posez vos questions à mon assistant IA auto-hébergé.">
     <meta name="color-scheme" content="light dark">
+    <!-- Avant tout rendu : les effets d'apparition ne masquent le contenu que si JavaScript est actif. -->
+    <script>document.documentElement.classList.add("js");</script>
     <style>
         :root {
             --primary: #2e5a88;
@@ -149,14 +151,23 @@
 
         footer { margin-top: 64px; padding-top: 24px; border-top: 1px solid var(--border); color: var(--muted); font-size: .85rem; }
 
-        /* Apparition progressive */
-        .reveal { animation: rise .6s ease both; }
-        .reveal:nth-child(2) { animation-delay: .08s; }
-        .reveal:nth-child(3) { animation-delay: .16s; }
-        .reveal:nth-child(4) { animation-delay: .24s; }
-        @keyframes rise { from { opacity: 0; transform: translateY(10px); } }
+        /* Apparition au scroll : chaque bloc se « matérialise » (flou → net, décalé → en place).
+           --delay échelonne les éléments d'un même groupe. */
+        .js [data-reveal] {
+            opacity: 0;
+            transform: translateY(28px) scale(.97);
+            filter: blur(10px);
+            transition:
+                opacity .8s ease var(--delay, 0s),
+                transform .9s cubic-bezier(.16, 1, .3, 1) var(--delay, 0s),
+                filter .8s ease var(--delay, 0s);
+        }
+        .js [data-reveal].is-visible { opacity: 1; transform: none; filter: none; }
+        /* Les titres de section se resserrent en apparaissant. */
+        .js h2[data-reveal] { letter-spacing: .45em; transition-property: opacity, transform, filter, letter-spacing; transition-duration: .8s, .9s, .8s, 1.1s; }
+        .js h2[data-reveal].is-visible { letter-spacing: .12em; }
         @media (prefers-reduced-motion: reduce) {
-            .reveal { animation: none; }
+            .js [data-reveal], .js h2[data-reveal] { opacity: 1; transform: none; filter: none; letter-spacing: .12em; transition: none; }
             .btn { transition: none; }
         }
 
@@ -177,8 +188,8 @@
 </div>
 
 <main>
-    <header class="reveal">
-        <div class="hero">
+    <header>
+        <div class="hero" data-reveal>
             <div class="avatar" aria-hidden="true">RM</div>
             <div>
                 <h1>Rémi Mialon-Evan</h1>
@@ -192,7 +203,7 @@
                 </p>
             </div>
         </div>
-        <ul class="chips">
+        <ul class="chips" data-stagger>
             <li>Android</li>
             <li>Kotlin</li>
             <li>Jetpack Compose</li>
@@ -201,7 +212,7 @@
             <li>Python</li>
             <li>Machine Learning</li>
         </ul>
-        <div class="actions">
+        <div class="actions" data-reveal style="--delay: .25s">
             <a class="btn" id="cv-main" href="#" target="_blank" rel="noopener">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 3v12m0 0-5-5m5 5 5-5M5 21h14"/></svg>
                 <span data-i18n="cvButton"></span>
@@ -209,8 +220,8 @@
         </div>
     </header>
 
-    <section class="reveal" aria-labelledby="assistant-title">
-        <div class="card assistant">
+    <section aria-labelledby="assistant-title">
+        <div class="card assistant" data-reveal>
             <div class="assistant-head">
                 <div class="assistant-icon" aria-hidden="true">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3l1.8 4.7L18.5 9.5l-4.7 1.8L12 16l-1.8-4.7L5.5 9.5l4.7-1.8z"/><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z"/></svg>
@@ -238,14 +249,14 @@
         </div>
     </section>
 
-    <section class="reveal">
-        <h2 data-i18n="profileTitle"></h2>
-        <div class="card"><p data-i18n="profile"></p></div>
+    <section>
+        <h2 data-i18n="profileTitle" data-reveal></h2>
+        <div class="card" data-reveal style="--delay: .1s"><p data-i18n="profile"></p></div>
     </section>
 
-    <section class="reveal">
-        <h2 data-i18n="experienceTitle"></h2>
-        <ol class="timeline">
+    <section>
+        <h2 data-i18n="experienceTitle" data-reveal></h2>
+        <ol class="timeline" data-stagger>
             <li>
                 <div class="when" data-i18n="job1When"></div>
                 <div class="card">
@@ -274,10 +285,10 @@
     </section>
 
     <section>
-        <h2 data-i18n="searchTitle"></h2>
-        <div class="card">
+        <h2 data-i18n="searchTitle" data-reveal></h2>
+        <div class="card" data-reveal style="--delay: .1s">
             <p data-i18n="search"></p>
-            <ul class="countries">
+            <ul class="countries" data-stagger>
                 <li data-i18n="c1"></li>
                 <li data-i18n="c2"></li>
                 <li data-i18n="c3"></li>
@@ -289,8 +300,8 @@
     </section>
 
     <section>
-        <h2 data-i18n="linksTitle"></h2>
-        <div class="links">
+        <h2 data-i18n="linksTitle" data-reveal></h2>
+        <div class="links" data-stagger>
             <a class="btn" id="cv-other" href="#" target="_blank" rel="noopener">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6"/></svg>
                 <span data-i18n="cvOther"></span>
@@ -310,7 +321,7 @@
         </div>
     </section>
 
-    <footer>
+    <footer data-reveal>
         <span data-i18n="footer"></span>
         <a href="https://github.com/Wardmisp/recruiter-chatbot" target="_blank" rel="noopener">github.com/Wardmisp/recruiter-chatbot</a>
     </footer>
@@ -408,6 +419,27 @@
         if (window.RecruiterChat) window.RecruiterChat.open();
     }));
     render();
+
+    // Apparition au scroll : les enfants d'un groupe [data-stagger] apparaissent en cascade.
+    document.querySelectorAll("[data-stagger]").forEach((group) => {
+        [...group.children].forEach((child, index) => {
+            child.setAttribute("data-reveal", "");
+            child.style.setProperty("--delay", `${index * 70}ms`);
+        });
+    });
+    const revealed = document.querySelectorAll("[data-reveal]");
+    if ("IntersectionObserver" in window) {
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach((entry) => {
+                if (!entry.isIntersecting) return;
+                entry.target.classList.add("is-visible");
+                observer.unobserve(entry.target);
+            });
+        }, { rootMargin: "0px 0px -8% 0px", threshold: 0.12 });
+        revealed.forEach((el) => observer.observe(el));
+    } else {
+        revealed.forEach((el) => el.classList.add("is-visible"));
+    }
 </script>
 <script src="chat-widget.js" defer></script>
 </body>

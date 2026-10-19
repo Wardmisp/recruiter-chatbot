@@ -159,6 +159,12 @@ For local web development, add `http://localhost:8080` to `ALLOWED_ORIGIN` on th
 
 The page can also open the panel from its own buttons with `window.RecruiterChat.open()`.
 
+## License
+
+The source code is released under the [MIT License](LICENSE). My personal content — the background
+files in `knowledge/`, the resumes in `cv/` and the biographical texts of the presentation page — is
+not covered and remains all rights reserved. To reuse the project, swap in your own content.
+
 ## About
 
 Built by **Rémi Mialon-Evan**, Mobile Engineer — Android / Kotlin
