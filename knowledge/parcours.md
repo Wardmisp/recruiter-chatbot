@@ -30,7 +30,8 @@ Il est disponible pour un contrat frontalier ou une relocation.
 
 ### Développeur d'applications mobiles — Référent technique Android — Alpes Contrôles (depuis mars 2026)
 
-- Application mobile déployée sur une flotte de plus de 1 000 appareils.
+- Ensemble d'applications et de bibliothèques Android déployé sur une flotte de plus de
+  1 000 appareils.
 - Au sein d'une équipe de 8 experts, dans une DSI d'une quarantaine de personnes, pour une
   entreprise de plus de 1 000 collaborateurs.
 - Référent technique Android : garant des choix d'architecture et des bonnes pratiques

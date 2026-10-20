@@ -28,7 +28,7 @@ He is open to a cross-border contract or to relocation.
 
 ### Mobile Application Developer — Android Technical Lead — Alpes Contrôles (since March 2026)
 
-- Mobile application deployed on a fleet of more than 1,000 devices.
+- A suite of Android apps and libraries deployed on a fleet of more than 1,000 devices.
 - Part of a team of 8 experts, within an IT department of about 40 people, in a company of
   more than 1,000 employees.
 - Android Technical Lead: owner of architecture decisions and best practices
