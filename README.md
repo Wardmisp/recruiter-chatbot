@@ -49,7 +49,8 @@ flowchart LR
     W -- "HTTPS :38443" --> C
     A -- "HTTPS :38443" --> C
     C -- "/chat, /health" --> F
-    C -- "/cv/*.pdf" --> CV[("cv/ PDFs")]
+    W -- "download" --> CV[("cv/ PDFs<br/>(GitHub Pages)")]
+    A -- "download" --> CV
     F -- "internal network" --> O
     F -. "reads on each request" .-> K
     D -. "keeps the DNS record up to date" .-> DNS(("DuckDNS"))
@@ -111,7 +112,7 @@ assistant can be updated without restarting anything.
 ├── caddy/                  Caddy image with the DuckDNS plugin + Caddyfile
 ├── duckdns/                Dynamic DNS updater script
 ├── knowledge/              Background in Markdown (FR + EN) — the model's only source
-├── cv/                     Public resume PDFs, served by Caddy under /cv/
+├── cv/                     Public resume PDFs, published with the site on GitHub Pages
 ├── client/                 Kotlin Multiplatform project
 │   ├── shared/             Shared code: Ktor client, SSE parser, ViewModel, Compose UI, tests
 │   ├── androidApp/         Android entry point

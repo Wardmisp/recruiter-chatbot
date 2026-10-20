@@ -5,15 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Assistant de Rémi</title>
     <link type="text/css" rel="stylesheet" href="styles.css">
+    <style>
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .spinner { animation: spin 1s linear infinite; }
+        @media (prefers-reduced-motion: reduce) { .spinner { animation-duration: 3s; } }
+    </style>
 </head>
 <body style="text-align: center; align-content: center">
-    <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 50 50" role="presentation">
+    <svg class="spinner" xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 50 50" role="presentation">
         <circle cx="25" cy="25" r="20" stroke="#3a3935" stroke-width="4" fill="none"/>
         <circle cx="25" cy="25" r="20" stroke="#f06b45" stroke-width="4" fill="none" stroke-linecap="round"
-                stroke-dasharray="90 125">
-            <animateTransform attributeName="transform" type="rotate" from="0 25 25" to="360 25 25" dur="1s"
-                              repeatCount="indefinite"/>
-        </circle>
+                stroke-dasharray="90 125"/>
     </svg>
     <script>
         // chat/?lang=fr|en, passé par la page d'accueil : impose la langue des textes de l'appli,

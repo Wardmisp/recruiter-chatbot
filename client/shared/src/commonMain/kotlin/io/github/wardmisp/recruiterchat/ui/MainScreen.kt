@@ -42,8 +42,9 @@ private enum class MainTab(val label: StringResource) {
 }
 
 @Composable
-fun MainScreen(chatViewModel: ChatViewModel) {
-    var selectedTab by rememberSaveable { mutableStateOf(MainTab.Chat) }
+fun MainScreen(chatViewModel: ChatViewModel, startOnCv: Boolean = false) {
+    // startOnCv : onglet CV cliqué dans la copie du composant sur la page d'accueil.
+    var selectedTab by rememberSaveable { mutableStateOf(if (startOnCv) MainTab.Cv else MainTab.Chat) }
     val chatState by chatViewModel.state.collectAsStateWithLifecycle()
 
     Surface(Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {

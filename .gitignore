@@ -44,3 +44,6 @@ _site/
 .claude/skills/mobile-native/
 .claude/skills/prototype/
 .claude/skills/review-animations/
+
+# Archives des critiques de design (skill impeccable)
+.impeccable/

@@ -1,7 +1,7 @@
 <resources>
     <string name="title">L’assistant de Rémi</string>
-    <string name="subtitle">Questions sur mon parcours, mes compétences ou ma disponibilité</string>
-    <string name="disclaimer">Réponses générées par une IA open-source auto-hébergée, uniquement à partir de mon CV. Elles peuvent contenir des erreurs.</string>
+    <string name="subtitle">Questions sur le parcours, les compétences ou la disponibilité de Rémi</string>
+    <string name="disclaimer">Réponses générées par une IA open-source auto-hébergée, uniquement à partir du CV de Rémi. Elles peuvent contenir des erreurs.</string>
     <string name="welcome">Bonjour ! Je suis l’assistant de Rémi. Posez-moi vos questions sur son parcours, ses compétences ou sa disponibilité. Je réponds en français ou en anglais.</string>
     <string name="suggestion_1">Quelles sont ses compétences en Kotlin ?</string>
     <string name="suggestion_2">Parlez-moi de son expérience chez Visioglobe.</string>

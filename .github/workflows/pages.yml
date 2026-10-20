@@ -8,6 +8,7 @@ on:
     paths:
       - "client/**"
       - "site/**"
+      - "cv/**"
       - ".github/workflows/pages.yml"
   workflow_dispatch:
 
@@ -46,6 +47,8 @@ jobs:
         run: |
           mkdir -p _site/chat
           cp -r site/. _site/
+          # CV servis par Pages : téléchargeables même quand le serveur maison est éteint.
+          cp -r cv _site/cv
           # Les source maps ne servent qu'au débogage : inutile de les publier.
           rsync -a --exclude '*.map' \
             client/webApp/build/dist/composeWebCompatibility/productionExecutable/ _site/chat/
