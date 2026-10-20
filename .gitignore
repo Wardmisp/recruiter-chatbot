@@ -30,3 +30,17 @@ CLAUDE.local.md
 
 # Site assemblé localement (prévisualisation)
 _site/
+
+# Skills tierces (MIT / Apache-2.0), réinstallables depuis skills-lock.json
+.claude/skills/animate/
+.claude/skills/animation-performance/
+.claude/skills/animation-vocabulary/
+.claude/skills/apple-design/
+.claude/skills/break-ui/
+.claude/skills/emil-design-eng/
+.claude/skills/find-animation-opportunities/
+.claude/skills/impeccable/
+.claude/skills/improve-animations/
+.claude/skills/mobile-native/
+.claude/skills/prototype/
+.claude/skills/review-animations/
