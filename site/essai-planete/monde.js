@@ -11,7 +11,8 @@ const GRAVITY = 34;
 const projected = new THREE.Vector3();
 const motionOk = !matchMedia("(prefers-reduced-motion: reduce)").matches;
 // Aperçu derrière le curseur de choix de la page d'accueil : Valkea marche seule, sans interface.
-const preview = new URLSearchParams(location.search).has("apercu");
+let preview = new URLSearchParams(location.search).has("apercu");
+let paused = false;
 if (preview) document.documentElement.classList.add("apercu");
 
 const $ = (id) => document.getElementById(id);
@@ -455,6 +456,7 @@ function renderScore() {
     $("bonus").textContent = UI[lang].bonusButton;
 }
 function collectBones() {
+    if (preview) return;
     if (dialogOpen()) return;
     bones.forEach((b) => {
         if (!b.holder.visible || Math.abs(shortest(b.angle - position)) * R > 1.6) return;
@@ -768,12 +770,37 @@ function step(dt, time) {
 
 let last = performance.now();
 function frame(now) {
+    if (paused) {
+        last = now;
+        requestAnimationFrame(frame);
+        return;
+    }
     const dt = Math.min(0.1, (now - last) / 1000);
     last = now;
     step(dt, now / 1000);
     placeLabels();
     renderer.render(scene, camera);
     requestAnimationFrame(frame);
+}
+
+// Intégré à la page de choix : elle lance la vraie partie, met en pause, et reçoit le retour au site classique.
+addEventListener("message", (e) => {
+    if (e.origin !== location.origin || e.source !== parent) return;
+    if (e.data === "choix:pause") paused = true;
+    if (e.data === "choix:reprendre") paused = false;
+    if (e.data === "choix:jouer" && preview) {
+        preview = false;
+        document.documentElement.classList.remove("apercu");
+        position = -0.26;
+        velocity = 0;
+        introDialog.showModal();
+    }
+});
+if (parent !== window) {
+    $("classic").addEventListener("click", (e) => {
+        e.preventDefault();
+        parent.postMessage("choix:classique", location.origin);
+    });
 }
 
 render();

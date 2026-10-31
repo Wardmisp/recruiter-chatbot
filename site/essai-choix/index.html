@@ -21,19 +21,26 @@
         body { background: var(--paper); color: var(--ink); font: 16px/1.4 var(--sans); -webkit-font-smoothing: antialiased; }
         :focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
 
-        /* Les deux vraies pages, inertes tant que le choix n'est pas fait. */
+        /* Les deux vraies pages, côte à côte. Seule la page choisie reçoit les clics. */
         iframe { position: fixed; inset: 0; width: 100%; height: 100%; border: 0; background: var(--paper); pointer-events: none; }
         #world { clip-path: inset(0 0 0 calc(var(--pos) * 1%)); }
+        .chosen-classic:not(.dragging) #classic, .chosen-world:not(.dragging) #world { pointer-events: auto; }
 
         #stage { position: fixed; inset: 0; touch-action: none; cursor: ew-resize; user-select: none; -webkit-user-select: none; }
+        .chosen-classic:not(.dragging) #stage, .chosen-world:not(.dragging) #stage { pointer-events: none; }
         .divider { position: absolute; top: 0; bottom: 0; left: calc(var(--pos) * 1%); width: 4px; margin-left: -2px; background: var(--ink); }
+        .chosen-classic:not(.dragging) .divider, .chosen-world:not(.dragging) .divider { display: none; }
         .handle {
             position: absolute; top: 50%; left: calc(var(--pos) * 1%); width: 72px; height: 72px; margin: -36px 0 0 -36px; padding: 0;
             display: grid; place-items: center; border: 0; border-radius: 50%; background: var(--accent); color: #fff; font-size: 28px; font-weight: 700;
-            cursor: ew-resize; box-shadow: 0 6px 22px rgba(22, 22, 22, .35); touch-action: none;
+            cursor: ew-resize; box-shadow: 0 6px 22px rgba(22, 22, 22, .35); touch-action: none; pointer-events: auto;
         }
+        .handle:hover { background: var(--ink); }
+        /* Mode choisi : la flèche reste accrochée au bord de l'écran. */
+        .chosen-classic:not(.dragging) .handle { left: auto; right: 0; width: 44px; height: 72px; margin: -36px 0 0; border-radius: 36px 0 0 36px; font-size: 24px; }
+        .chosen-world:not(.dragging) .handle { left: 0; width: 44px; height: 72px; margin: -36px 0 0; border-radius: 0 36px 36px 0; font-size: 24px; }
         /* Retour au centre ou fin du geste : animés seulement quand le doigt a lâché. */
-        .settling iframe, .settling .divider, .settling .handle { transition: clip-path .45s cubic-bezier(.16, 1, .3, 1), left .45s cubic-bezier(.16, 1, .3, 1); }
+        .settling iframe, .settling .divider, .settling:not(.chosen-classic):not(.chosen-world) .handle { transition: clip-path .45s cubic-bezier(.16, 1, .3, 1), left .45s cubic-bezier(.16, 1, .3, 1); }
         .nudge .handle { animation: nudge 1.8s ease-in-out .8s 2; }
         @keyframes nudge { 25% { transform: translateX(-22px); } 75% { transform: translateX(22px); } }
 
@@ -56,24 +63,25 @@
         #pick-world { text-align: right; }
         .is-active { background: var(--accent); border-color: var(--accent); color: #fff; }
         .is-active span { color: inherit; }
+        .chosen-classic .intro, .chosen-world .intro, .chosen-classic .choices, .chosen-world .choices { display: none; }
         @media (prefers-reduced-motion: reduce) {
-            .settling iframe, .settling .divider, .settling .handle { transition: none; }
+            .settling iframe, .settling .divider, .settling:not(.chosen-classic):not(.chosen-world) .handle { transition: none; }
             .nudge .handle { animation: none; }
         }
     </style>
 </head>
 <body class="nudge">
-    <iframe id="classic" src="../" title="" tabindex="-1" aria-hidden="true"></iframe>
-    <iframe id="world" src="../essai-planete/?apercu" title="" tabindex="-1" aria-hidden="true"></iframe>
+    <iframe id="classic" src="../" title="" inert></iframe>
+    <iframe id="world" title="" inert></iframe>
 
     <div id="stage">
         <div class="divider"></div>
-        <button type="button" id="handle" class="handle" role="slider" aria-valuemin="0" aria-valuemax="100" aria-valuenow="50"><span aria-hidden="true">⇔</span></button>
+        <button type="button" id="handle" class="handle"><span id="arrow" aria-hidden="true">⇔</span></button>
     </div>
 
     <header class="intro">
         <h1 id="title">Choisissez votre visite</h1>
-        <p id="subtitle">Glissez le curseur : la page que vous révélez s'ouvre.</p>
+        <p id="subtitle">Glissez le curseur pour révéler une page.</p>
     </header>
 
     <div class="choices">
@@ -85,28 +93,29 @@
 
 <script>
     const TEXTS = {
-        fr: { title: "Choisissez votre visite", subtitle: "Glissez le curseur : la page que vous révélez s'ouvre.", classicName: "Site classique", classicDesc: "L'essentiel de mon CV, à lire", worldName: "Monde 3D", worldDesc: "Mon CV à parcourir avec Valkea", slider: "Curseur de choix : à droite le site classique, à gauche le monde 3D" },
-        en: { title: "Choose your visit", subtitle: "Drag the slider: the page you reveal opens.", classicName: "Classic site", classicDesc: "My resume essentials, to read", worldName: "3D world", worldDesc: "Explore my resume with Valkea", slider: "Choice slider: right for the classic site, left for the 3D world" },
+        fr: { title: "Choisissez votre visite", subtitle: "Glissez le curseur pour révéler une page.", classicName: "Site classique", classicDesc: "L'essentiel de mon CV, à lire", worldName: "Monde 3D", worldDesc: "Mon CV à parcourir avec Valkea", slider: "Curseur de choix : flèches gauche et droite, puis Entrée", toClassic: "Passer au site classique", toWorld: "Passer au monde 3D" },
+        en: { title: "Choose your visit", subtitle: "Drag the slider to reveal a page.", classicName: "Classic site", classicDesc: "My resume essentials, to read", worldName: "3D world", worldDesc: "Explore my resume with Valkea", slider: "Choice slider: left and right arrows, then Enter", toClassic: "Switch to the classic site", toWorld: "Switch to the 3D world" },
     };
-    const DESTINATIONS = { classic: "../", world: "../essai-planete/" };
-    const THRESHOLD = 22;   // À moins de 22 % d'un bord, le lâcher vaut choix.
+    const THRESHOLD = 22;   // Avant le premier choix : à moins de 22 % d'un bord, le lâcher vaut choix.
+    const TAP_DISTANCE = 6; // En pixels : en dessous, le geste compte comme un clic sur la flèche.
+    const HASH = { classic: "#classique", world: "#monde" };
+    const WORLD_URL = "../essai-planete/";
 
     const $ = (id) => document.getElementById(id);
     const root = document.documentElement;
+    const body = document.body;
     const motionOk = !matchMedia("(prefers-reduced-motion: reduce)").matches;
     let saved = null;
     try { saved = localStorage.getItem("site.lang"); } catch (e) { /* stockage bloqué : langue du navigateur */ }
     const lang = saved === "fr" || saved === "en" ? saved : ((navigator.language || "fr").toLowerCase().startsWith("fr") ? "fr" : "en");
     const t = TEXTS[lang];
     root.lang = lang;
-    document.title = `Rémi Mialon-Evan — ${t.title}`;
     $("title").textContent = t.title;
     $("subtitle").textContent = t.subtitle;
     $("classic-name").textContent = t.classicName;
     $("classic-desc").textContent = t.classicDesc;
     $("world-name").textContent = t.worldName;
     $("world-desc").textContent = t.worldDesc;
-    $("handle").setAttribute("aria-label", t.slider);
     $("classic").title = t.classicName;
     $("world").title = t.worldName;
 
@@ -114,66 +123,126 @@
     function webglAvailable() {
         try { return !!document.createElement("canvas").getContext("webgl2"); } catch (e) { return false; }
     }
-    if (!webglAvailable()) location.replace(DESTINATIONS.classic);
+    if (!webglAvailable()) location.replace("../");
 
-    let leaving = false;
+    let chosen = null;      // null, "classic" ou "world".
+    let worldLive = false;  // false tant que le monde n'est qu'un aperçu.
+
+    const tellWorld = (message) => $("world").contentWindow?.postMessage(message, location.origin);
+
+    function renderHandle() {
+        const handle = $("handle");
+        $("arrow").textContent = chosen === "classic" ? "←" : chosen === "world" ? "→" : "⇔";
+        const label = chosen === "classic" ? t.toWorld : chosen === "world" ? t.toClassic : t.slider;
+        handle.setAttribute("aria-label", label);
+        handle.title = chosen ? label : "";
+        document.title = `Rémi Mialon-Evan — ${chosen === "classic" ? t.classicName : chosen === "world" ? t.worldName : t.title}`;
+    }
     function setPosition(pos) {
         const value = Math.max(0, Math.min(100, pos));
         root.style.setProperty("--pos", value);
-        $("handle").setAttribute("aria-valuenow", String(Math.round(value)));
         $("pick-classic").classList.toggle("is-active", value >= 100 - THRESHOLD);
         $("pick-world").classList.toggle("is-active", value <= THRESHOLD);
     }
     function settle(pos) {
-        document.body.classList.remove("nudge");
-        document.body.classList.add("settling");
+        body.classList.remove("nudge", "dragging");
+        body.classList.add("settling");
         setPosition(pos);
     }
     function choose(side) {
-        if (leaving) return;
-        leaving = true;
+        chosen = side;
         settle(side === "classic" ? 100 : 0);
-        setTimeout(() => location.assign(DESTINATIONS[side]), motionOk ? 460 : 0);
+        body.classList.toggle("chosen-classic", side === "classic");
+        body.classList.toggle("chosen-world", side === "world");
+        $("classic").inert = side !== "classic";
+        $("world").inert = side !== "world";
+        history.replaceState(null, "", HASH[side]);
+        if (side === "world" && !worldLive) {
+            worldLive = true;
+            tellWorld("choix:jouer");
+        }
+        // Le monde caché ne consomme rien : il reprend là où il en était.
+        tellWorld(side === "classic" ? "choix:pause" : "choix:reprendre");
+        // Sinon le clavier resterait ici et les flèches ne feraient plus marcher Valkea.
+        if (side === "world") $("world").focus();
+        renderHandle();
     }
+    const other = () => (chosen === "classic" ? "world" : "classic");
     function release(pos) {
-        if (pos >= 100 - THRESHOLD) choose("classic");
+        if (chosen) choose(pos < 50 ? "world" : "classic");
+        else if (pos >= 100 - THRESHOLD) choose("classic");
         else if (pos <= THRESHOLD) choose("world");
         else settle(50);
     }
 
-    // Glisser depuis n'importe où sur l'écran : le curseur suit le doigt ou la souris.
+    // Avant le choix : glisser depuis n'importe où. Après : depuis la flèche, ou un simple clic dessus.
     const stage = $("stage");
     const percent = (e) => e.clientX / innerWidth * 100;
     let dragging = false;
+    let startX = 0;
+    let moved = false;
     stage.addEventListener("pointerdown", (e) => {
-        if (leaving) return;
         dragging = true;
+        moved = false;
+        startX = e.clientX;
         stage.setPointerCapture(e.pointerId);
-        document.body.classList.remove("nudge", "settling");
+        if (!chosen) {
+            body.classList.remove("nudge", "settling");
+            setPosition(percent(e));
+        }
+    });
+    stage.addEventListener("pointermove", (e) => {
+        if (!dragging) return;
+        if (!moved && Math.abs(e.clientX - startX) < TAP_DISTANCE) return;
+        moved = true;
+        body.classList.remove("nudge", "settling");
+        body.classList.add("dragging");
+        tellWorld("choix:reprendre");
         setPosition(percent(e));
     });
-    stage.addEventListener("pointermove", (e) => { if (dragging) setPosition(percent(e)); });
     stage.addEventListener("pointerup", (e) => {
         if (!dragging) return;
         dragging = false;
-        release(percent(e));
+        if (chosen && !moved) choose(other());
+        else release(percent(e));
     });
-    stage.addEventListener("pointercancel", () => { dragging = false; settle(50); });
+    stage.addEventListener("pointercancel", () => {
+        dragging = false;
+        if (chosen) choose(chosen);
+        else settle(50);
+    });
 
     $("pick-classic").addEventListener("click", () => choose("classic"));
     $("pick-world").addEventListener("click", () => choose("world"));
 
-    // Clavier : flèches pour déplacer, Entrée pour valider le côté le plus révélé.
+    // Clavier : flèches pour déplacer, Entrée pour valider le côté le plus révélé ou changer de mode.
     $("handle").addEventListener("keydown", (e) => {
-        if (leaving) return;
         const current = Number(getComputedStyle(root).getPropertyValue("--pos"));
-        if (e.key === "ArrowRight") { settle(current + 10); e.preventDefault(); }
-        else if (e.key === "ArrowLeft") { settle(current - 10); e.preventDefault(); }
-        else if (e.key === "Home") { choose("world"); e.preventDefault(); }
-        else if (e.key === "End") { choose("classic"); e.preventDefault(); }
-        else if ((e.key === "Enter" || e.key === " ") && current !== 50) { choose(current > 50 ? "classic" : "world"); e.preventDefault(); }
+        if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            if (chosen) choose(other());
+            else if (current !== 50) choose(current > 50 ? "classic" : "world");
+        } else if (!chosen && e.key === "ArrowRight") { settle(current + 10); e.preventDefault(); }
+        else if (!chosen && e.key === "ArrowLeft") { settle(current - 10); e.preventDefault(); }
     });
+
+    // Le bouton « Mode classique » du monde reste dans cet écran.
+    addEventListener("message", (e) => {
+        if (e.origin === location.origin && e.source === $("world").contentWindow && e.data === "choix:classique") choose("classic");
+    });
+
+    // Adresse directe vers un mode (#classique ou #monde), par exemple depuis un CV.
+    const direct = location.hash === HASH.classic ? "classic" : location.hash === HASH.world ? "world" : null;
+    $("world").src = direct === "world" ? WORLD_URL : `${WORLD_URL}?apercu`;
     setPosition(50);
+    renderHandle();
+    if (direct === "world") worldLive = true;
+    if (direct) {
+        body.classList.remove("nudge");
+        // Le monde écoute ses messages une fois chargé.
+        if (direct === "classic") $("world").addEventListener("load", () => tellWorld("choix:pause"), { once: true });
+        choose(direct);
+    }
 </script>
 </body>
 </html>
