@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Rémi Mialon-Evan — Le parcours en 3D</title>
-    <meta name="robots" content="noindex">
     <meta name="description" content="Explorez le parcours de Rémi Mialon-Evan, ingénieur mobile Android / Kotlin, dans un petit monde en 3D.">
     <link rel="icon" href="../favicon.svg" type="image/svg+xml">
     <link rel="preload" href="../fonts/fraunces-600.woff2" as="font" type="font/woff2" crossorigin>
@@ -21,7 +20,7 @@
             <button type="button" id="bonus" class="bonus" hidden></button>
         </div>
         <nav class="hud-nav">
-            <a href="../" id="classic">Mode classique</a>
+            <a href="../classique/" id="classic">Mode classique</a>
             <div class="lang" role="group" aria-label="Langue / Language">
                 <button type="button" data-lang="fr">FR</button>
                 <button type="button" data-lang="en">EN</button>
@@ -60,9 +59,9 @@
 
     <div id="fallback" class="fallback" hidden>
         <h1 id="fallback-title"></h1>
-        <p><a href="../" id="fallback-link"></a></p>
+        <p><a href="../classique/" id="fallback-link"></a></p>
     </div>
-    <noscript><p class="fallback">Le monde 3D a besoin de JavaScript. <a href="../">Voir le site classique</a>.</p></noscript>
+    <noscript><p class="fallback">Le monde 3D a besoin de JavaScript. <a href="../classique/">Voir le site classique</a>.</p></noscript>
 
     <script type="module" src="monde.js"></script>
 </body>

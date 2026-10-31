@@ -69,7 +69,7 @@ through a **DNS-01 challenge** because ports 80/443 are not reachable from the I
 | **Backend** | Python, FastAPI, Server-Sent Events, httpx (async streaming to Ollama), slowapi (per-IP rate limiting), pydantic-settings |
 | **LLM** | Ollama, Qwen3 14B (Q4), thinking mode, runs on an NVIDIA RTX 5080 (16 GB VRAM) |
 | **Infrastructure** | Docker Compose, Caddy 2 built with `caddy-dns/duckdns` (xcaddy), Let's Encrypt DNS-01, DuckDNS dynamic DNS |
-| **Web page** | Static HTML/CSS/JS without dependencies, self-hosted fonts (Fraunces, Public Sans), embeddable chat bubble (`chat-widget.js`) |
+| **Web page** | Slider home page choosing between a classic page (static HTML/CSS/JS) and a 3D world (Three.js, self-hosted), self-hosted fonts (Fraunces, Public Sans), embeddable chat bubble (`chat-widget.js`) |
 | **CI/CD** | GitHub Actions: shared-code tests, web build, deployment to GitHub Pages |
 
 ## Notable design choices
@@ -117,7 +117,7 @@ assistant can be updated without restarting anything.
 │   ├── shared/             Shared code: Ktor client, SSE parser, ViewModel, Compose UI, tests
 │   ├── androidApp/         Android entry point
 │   └── webApp/             Web entry point (Wasm + JS)
-├── site/                   GitHub Pages: presentation page + chat-widget.js
+├── site/                   GitHub Pages: home slider, classique/, monde/ (3D), chat-widget.js
 ├── .github/workflows/      Tests, web build and Pages deployment
 ├── docker-compose.yml
 └── .env.example            All settings, documented (copy to .env)
