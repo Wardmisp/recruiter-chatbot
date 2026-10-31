@@ -10,6 +10,9 @@ const JUMP_SPEED = 13;
 const GRAVITY = 34;
 const projected = new THREE.Vector3();
 const motionOk = !matchMedia("(prefers-reduced-motion: reduce)").matches;
+// Aperçu derrière le curseur de choix de la page d'accueil : Valkea marche seule, sans interface.
+const preview = new URLSearchParams(location.search).has("apercu");
+if (preview) document.documentElement.classList.add("apercu");
 
 const $ = (id) => document.getElementById(id);
 const read = (key) => { try { return localStorage.getItem(key); } catch (e) { return null; } };
@@ -713,7 +716,7 @@ function step(dt, time) {
     let wanted = 0;
     if (!dialogOpen()) {
         keys.forEach((code) => { wanted += FORWARD_KEYS.has(code) ? 1 : -1; });
-        wanted = Math.sign(wanted) || held;
+        wanted = Math.sign(wanted) || held || (preview && motionOk ? 1 : 0);
         if (!wanted && targetPlace) {
             const gap = shortest(targetPlace.angle - position);
             if (Math.abs(gap) * R < 0.25) openPlace(targetPlace);
@@ -776,5 +779,5 @@ function frame(now) {
 render();
 // La police du site n'est peut-être pas encore chargée au premier dessin des panneaux.
 document.fonts?.load("600 100px Fraunces").then(drawSigns);
-introDialog.showModal();
+if (!preview) introDialog.showModal();
 requestAnimationFrame(frame);

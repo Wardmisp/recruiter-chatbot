@@ -125,6 +125,8 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .chat-frame { display: block; width: 100%; height: min(60vh, 520px); margin-top: 18px; border: 0; background: #161616; }
 .panel .reward { margin-top: 18px; padding: 12px 14px; border-left: 4px solid var(--accent); background: #e7e5de; }
 
+.apercu .hud, .apercu .controls-bar, .apercu .enter, .apercu .pop, .apercu #labels { display: none; }
+
 .fallback { position: fixed; inset: 0; z-index: 9; margin: 0; padding: 32px; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; background: var(--paper); }
 .fallback[hidden] { display: none; }
 .fallback h1 { font: 600 26px/1.2 var(--serif); margin: 0; }
