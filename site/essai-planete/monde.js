@@ -160,16 +160,20 @@ const inBlock = (angle, side) => {
     return a > blockStart - 0.05 && a < blockEnd + 0.05 && side > -0.5 && side < 0.42;
 };
 function planetStrip(startAngle, endAngle, sideA, sideB, radius, radiusB, color) {
+    // Plusieurs rangées sur la largeur : avec deux seulement, la bande passerait sous la courbure.
     const steps = 48;
+    const rows = 10;
     const positions = [];
     const index = [];
     for (let i = 0; i <= steps; i++) {
         const a = startAngle + (endAngle - startAngle) * i / steps;
-        normalAt(a, sideA).multiplyScalar(radius).toArray(positions, positions.length);
-        normalAt(a, sideB).multiplyScalar(radiusB).toArray(positions, positions.length);
-        if (i < steps) {
-            const k = i * 2;
-            index.push(k, k + 2, k + 1, k + 1, k + 2, k + 3);
+        for (let j = 0; j <= rows; j++) {
+            const t = j / rows;
+            normalAt(a, sideA + (sideB - sideA) * t).multiplyScalar(radius + (radiusB - radius) * t).toArray(positions, positions.length);
+            if (i < steps && j < rows) {
+                const k = i * (rows + 1) + j;
+                index.push(k, k + rows + 1, k + 1, k + 1, k + rows + 1, k + rows + 2);
+            }
         }
     }
     const geometry = new THREE.BufferGeometry();
@@ -181,7 +185,7 @@ function planetStrip(startAngle, endAngle, sideA, sideB, radius, radiusB, color)
     planet.add(strip);
     return strip;
 }
-planetStrip(blockStart, blockEnd, -0.42, 0.36, R + 0.15, R + 0.15, 0xdfa98a);
+planetStrip(blockStart, blockEnd, -0.42, 0.36, R + 0.2, R + 0.2, 0xdfa98a);
 planetStrip(blockStart, blockEnd, -0.42, -0.42, R + 0.1, R + 1.6, COLORS.accent);
 
 // Grands panneaux aux entrées de chapitre, écrits sur une texture pour suivre la langue.
