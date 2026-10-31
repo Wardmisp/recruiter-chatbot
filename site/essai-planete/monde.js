@@ -1,6 +1,6 @@
 // Petite planète 3D : elle tourne sous Valkea, qui avance, recule et saute d'étape en étape.
 import * as THREE from "./vendor/three.module.min.js";
-import { UI, PLACES, BONUS } from "./contenu.js";
+import { UI, PLACES, BONUS, CHAPTERS } from "./contenu.js";
 
 const LANG_KEY = "site.lang";
 const R = 26;               // Rayon de la planète.
@@ -126,25 +126,102 @@ function onPlanet(angle, side) {
 // Soleil vermillon derrière la planète.
 mesh(new THREE.CircleGeometry(13, 48), new THREE.MeshBasicMaterial({ color: COLORS.accent }), 30, R + 2, -120).castShadow = false;
 
-// --- Étapes, dans l'ordre du tour ---
+// --- Chapitres et étapes, dans l'ordre d'un CV. `gap` : distance à l'étape précédente, en radians ---
+const chapterDefs = ["profil", "experiences", "formation", "projets", "loisirs", "contact"].map((id) => ({ id }));
 const placeDefs = [
-    { id: "presentation", top: 5.4, build: buildSignpost },
-    { id: "alpes", top: 5.4, build: buildAlpes },
-    { id: "visioglobe", top: 9.2, build: buildAirport },
-    { id: "debuts", top: 4.2, build: buildVr },
-    { id: "projets", top: 5.8, build: buildCourt },
-    { id: "loisirs", top: 4.2, build: buildFalconry },
-    { id: "chalet", top: 8, build: buildChalet },
+    { id: "profil", chapter: "profil", gap: 0, top: 5.4, build: buildSignpost },
+    { id: "alpes", chapter: "experiences", gap: 0.9, top: 7.6, build: buildSite },
+    { id: "visioglobe", chapter: "experiences", gap: 0.72, top: 9.2, build: buildAirport },
+    { id: "alten", chapter: "experiences", gap: 0.72, top: 4.2, build: buildVr },
+    { id: "formation", chapter: "formation", gap: 0.9, top: 5.6, build: buildSchool },
+    { id: "projets", chapter: "projets", gap: 0.75, top: 5.8, build: buildCourt },
+    { id: "loisirs", chapter: "loisirs", gap: 0.75, top: 4.2, build: buildFalconry },
+    { id: "contact", chapter: "contact", gap: 0.75, top: 8, build: buildChalet },
 ];
 const SIDE_OFFSET = -0.23; // Bâtiments en retrait, derrière le chemin vu de la caméra.
-placeDefs.forEach((p, i) => {
-    p.angle = (i / placeDefs.length) * Math.PI * 2;
+let nextAngle = 0;
+placeDefs.forEach((p) => {
+    nextAngle += p.gap;
+    p.angle = nextAngle;
     p.group = onPlanet(p.angle, SIDE_OFFSET);
     p.build(p.group);
     // Losange au-dessus du lieu tant qu'il n'est pas visité.
     p.marker = mesh(new THREE.OctahedronGeometry(0.6), new THREE.MeshStandardMaterial({ color: COLORS.accent, emissive: COLORS.accent, emissiveIntensity: 0.35, flatShading: true }), 0, p.top, 0, p.group);
     p.marker.castShadow = false;
 });
+chapterDefs.forEach((c) => { c.stops = placeDefs.filter((p) => p.chapter === c.id); });
+
+// Quartier des expériences : un seul bloc, sol commun et mur de fond continu.
+const experienceStops = chapterDefs[1].stops;
+const blockStart = experienceStops[0].angle - 0.46;
+const blockEnd = experienceStops[experienceStops.length - 1].angle + 0.46;
+const inBlock = (angle, side) => {
+    const a = ((angle % (Math.PI * 2)) + Math.PI * 2) % (Math.PI * 2);
+    return a > blockStart - 0.05 && a < blockEnd + 0.05 && side > -0.5 && side < 0.42;
+};
+function planetStrip(startAngle, endAngle, sideA, sideB, radius, radiusB, color) {
+    const steps = 48;
+    const positions = [];
+    const index = [];
+    for (let i = 0; i <= steps; i++) {
+        const a = startAngle + (endAngle - startAngle) * i / steps;
+        normalAt(a, sideA).multiplyScalar(radius).toArray(positions, positions.length);
+        normalAt(a, sideB).multiplyScalar(radiusB).toArray(positions, positions.length);
+        if (i < steps) {
+            const k = i * 2;
+            index.push(k, k + 2, k + 1, k + 1, k + 2, k + 3);
+        }
+    }
+    const geometry = new THREE.BufferGeometry();
+    geometry.setAttribute("position", new THREE.Float32BufferAttribute(positions, 3));
+    geometry.setIndex(index);
+    geometry.computeVertexNormals();
+    const strip = new THREE.Mesh(geometry, new THREE.MeshStandardMaterial({ color, roughness: 1, side: THREE.DoubleSide }));
+    strip.receiveShadow = true;
+    planet.add(strip);
+    return strip;
+}
+planetStrip(blockStart, blockEnd, -0.42, 0.36, R + 0.15, R + 0.15, 0xdfa98a);
+planetStrip(blockStart, blockEnd, -0.42, -0.42, R + 0.1, R + 1.6, COLORS.accent);
+
+// Grands panneaux aux entrées de chapitre, écrits sur une texture pour suivre la langue.
+const signs = [];
+function chapterSign(chapterId, angle, side, accent) {
+    const canvasText = document.createElement("canvas");
+    canvasText.width = 1024;
+    canvasText.height = 220;
+    const texture = new THREE.CanvasTexture(canvasText);
+    texture.colorSpace = THREE.SRGBColorSpace;
+    const g = onPlanet(angle, side);
+    cyl(0.12, 0.14, 3.4, COLORS.wood, -2.9, 0, 0, g, 6);
+    cyl(0.12, 0.14, 3.4, COLORS.wood, 2.9, 0, 0, g, 6);
+    const plate = mesh(new THREE.PlaneGeometry(6.6, 1.42), new THREE.MeshBasicMaterial({ map: texture }), 0, 3.5, 0.15, g);
+    plate.castShadow = false;
+    signs.push({ chapterId, canvas: canvasText, texture, accent });
+}
+function drawSigns() {
+    signs.forEach((sign) => {
+        const context = sign.canvas.getContext("2d");
+        context.fillStyle = sign.accent ? "#b23a1c" : "#161616";
+        context.fillRect(0, 0, sign.canvas.width, sign.canvas.height);
+        context.fillStyle = "#f2f1ed";
+        const text = CHAPTERS[lang][sign.chapterId];
+        let size = 120;
+        do {
+            context.font = `600 ${size}px Fraunces, Georgia, serif`;
+            size -= 4;
+        } while (context.measureText(text).width > 950);
+        context.textAlign = "center";
+        context.textBaseline = "middle";
+        context.fillText(text, 512, 112);
+        sign.texture.needsUpdate = true;
+    });
+}
+chapterDefs.forEach((c) => {
+    const accent = c.id === "experiences";
+    if (c.id !== "profil") chapterSign(c.id, c.stops[0].angle - (accent ? 0.34 : 0.33), -0.16, accent);
+});
+chapterSign("experiences", blockEnd - 0.12, -0.16, true);
 
 function tree(angle, side, s) {
     const g = onPlanet(angle, side);
@@ -172,7 +249,7 @@ for (let placed = 0, tries = 0; placed < 90 && tries < 800; tries++) {
     const angle = rand() * Math.PI * 2;
     // Arbres de chaque côté, jamais sur le chemin ni entre la caméra et Valkea.
     const side = rand() < 0.5 ? -(0.16 + rand() * 0.34) : 0.3 + rand() * 0.6;
-    if (nearPlace(angle, side, 0.34)) continue;
+    if (nearPlace(angle, side, 0.34) || inBlock(angle, side)) continue;
     tree(angle, side, 0.6 + rand() * 0.6);
     placed++;
 }
@@ -235,17 +312,26 @@ function buildAirport(g) {
     box(4.4, 0.1, 0.9, COLORS.accent, 0, -0.05, 0, plane);
     box(0.1, 0.9, 0.6, COLORS.accent, 0, 0.2, -2, plane);
 }
-function buildAlpes(g) {
-    // Bureau et flotte de téléphones, tous pareils : plus de 1 000 appareils.
-    box(6, 3.5, 3.2, COLORS.wall, 0, 0, -1, g);
-    box(6.3, 0.3, 3.5, COLORS.ink, 0, 3.5, -1, g);
-    box(1.2, 2, 0.15, COLORS.ink, 0, 0, 0.65, g);
-    for (let i = 0; i < 2; i++) box(0.9, 0.9, 0.12, COLORS.glass, -2.1 + i * 4.2, 1.5, 0.62, g);
-    for (let i = 0; i < 5; i++) {
-        const phone = box(0.65, 1.2, 0.1, COLORS.ink, -2.4 + i * 1.2, 0, 1.8, g);
-        phone.rotation.x = -0.2;
-        box(0.5, 0.92, 0.04, COLORS.accent, 0, -0.46, 0.06, phone);
-    }
+function buildSite(g) {
+    // Chantier : contrôle technique de la construction, avec le téléphone de l'inspecteur.
+    const concrete = 0xb9b7ae;
+    [0, 1.7, 3.4].forEach((y) => box(5, 0.22, 3, concrete, -0.4, y, -0.9, g));
+    [[-2.7, 0.4], [-2.7, -2.2], [1.9, 0.4], [1.9, -2.2], [-0.4, 0.4]].forEach(([x, z]) => box(0.22, 3.4, 0.22, concrete, x, 0, z, g));
+    // Grue.
+    const yellow = 0xe0a526;
+    box(0.4, 6.8, 0.4, yellow, 3, 0, -1.2, g);
+    box(5.8, 0.28, 0.28, yellow, 1.3, 6.8, -1.2, g);
+    box(0.7, 0.7, 0.5, COLORS.ink, 4, 6.2, -1.2, g);
+    box(0.05, 1.8, 0.05, COLORS.ink, -1, 5, -1.2, g);
+    box(0.7, 0.2, 0.5, COLORS.accent, -1, 4.8, -1.2, g);
+    // Barrière et cônes.
+    box(3.4, 0.16, 0.08, COLORS.accent, -1.3, 0.72, 1.35, g);
+    [-2.9, 0.3].forEach((x) => box(0.1, 0.9, 0.1, COLORS.ink, x, 0, 1.35, g));
+    [1.1, 2.1].forEach((x) => cone(0.26, 0.7, 0xe2652a, x, 0, 1.3, g, 8));
+    // Téléphone sur pied : le métier reste les applis Android.
+    box(0.07, 1, 0.07, COLORS.ink, 3.4, 0, 1, g);
+    const phone = box(0.7, 1.25, 0.1, COLORS.ink, 3.4, 1, 1, g);
+    box(0.54, 1, 0.04, COLORS.glass, 0, -0.5, 0.06, phone);
 }
 function buildCourt(g) {
     // Panier de basket : Glorious Five. Serveur : le chatbot auto-hébergé.
@@ -261,13 +347,22 @@ function buildCourt(g) {
     for (let i = 0; i < 3; i++) box(0.9, 0.12, 0.05, 0x7fd18c, -2.5, 0.6 + i * 0.5, 0.97, g);
 }
 function buildVr(g) {
-    // Socle et casque VR, puis pile de livres : les débuts et la formation.
-    cyl(1.2, 1.5, 1.4, COLORS.wall, -0.7, 0, 0, g, 8);
-    box(1.7, 0.9, 0.9, COLORS.ink, -0.7, 1.7, 0, g);
-    box(1.35, 0.5, 0.15, COLORS.accent, -0.7, 1.9, 0.48, g);
-    const strap = mesh(new THREE.TorusGeometry(0.72, 0.07, 6, 14), COLORS.ink, -0.7, 2.15, -0.15, g);
+    // Socle et casque VR : le début de carrière.
+    cyl(1.2, 1.5, 1.4, COLORS.wall, 0, 0, 0, g, 8);
+    box(1.7, 0.9, 0.9, COLORS.ink, 0, 1.7, 0, g);
+    box(1.35, 0.5, 0.15, COLORS.accent, 0, 1.9, 0.48, g);
+    const strap = mesh(new THREE.TorusGeometry(0.72, 0.07, 6, 14), COLORS.ink, 0, 2.15, -0.15, g);
     strap.rotation.x = Math.PI / 2;
-    [COLORS.accent, COLORS.ink, COLORS.glass].forEach((c, i) => box(1.5 - i * 0.15, 0.35, 1, c, 1.8, i * 0.35, 0.8, g));
+}
+function buildSchool(g) {
+    // École au toit plat, chapeau de diplômé et pile de livres.
+    box(5.4, 2.8, 2.8, COLORS.wall, -0.6, 0, -0.9, g);
+    box(5.7, 0.26, 3.1, COLORS.ink, -0.6, 2.8, -0.9, g);
+    box(1, 1.8, 0.12, COLORS.ink, -0.6, 0, 0.52, g);
+    [-2.4, 1.2].forEach((x) => box(0.9, 0.9, 0.12, COLORS.glass, x, 1.2, 0.52, g));
+    box(1.5, 0.12, 1.5, COLORS.ink, -0.6, 3.75, -0.9, g).rotation.y = Math.PI / 4;
+    box(0.8, 0.5, 0.8, COLORS.ink, -0.6, 3.2, -0.9, g);
+    [COLORS.accent, COLORS.ink, COLORS.glass].forEach((c, i) => box(1.5 - i * 0.15, 0.35, 1, c, 3.2, i * 0.35, 0.3, g));
 }
 function buildFalconry(g) {
     // Perchoir et faucon, batterie à côté.
@@ -368,7 +463,7 @@ const FORWARD_KEYS = new Set(["ArrowRight", "KeyD", "ArrowUp", "KeyW"]);   // Ke
 const BACK_KEYS = new Set(["ArrowLeft", "KeyA", "ArrowDown", "KeyS"]);     // KeyA / KeyS = Q / S en AZERTY.
 const keys = new Set();
 let held = 0;             // Bouton ou écran maintenu : +1 avance, -1 recule.
-let position = -0.2;      // Angle de la planète : Valkea démarre juste avant la première étape.
+let position = -0.26;     // Angle de la planète : Valkea démarre juste avant la première étape.
 let velocity = 0;         // Vitesse lissée, en radians par seconde.
 let targetPlace = null;   // Étape à rejoindre seule (choisie dans la liste), ouverte à l'arrivée.
 let current = null;       // Étape assez proche pour y entrer.
@@ -448,17 +543,21 @@ function wirePanel(body) {
 
 function renderProgress() {
     $("progress").textContent = UI[lang].visited(visited.size, placeDefs.length);
+    let nearest = placeDefs[0];
     placeDefs.forEach((p) => {
         p.label.classList.toggle("is-visited", visited.has(p.id));
-        p.step.classList.toggle("is-visited", visited.has(p.id));
-        p.step.classList.toggle("is-current", p === current);
+        if (Math.abs(shortest(p.angle - position)) < Math.abs(shortest(nearest.angle - position))) nearest = p;
+    });
+    chapterDefs.forEach((c) => {
+        c.step.classList.toggle("is-visited", c.stops.every((p) => visited.has(p.id)));
+        c.step.classList.toggle("is-current", c.id === nearest.chapter);
     });
 }
 function renderEnter() {
     const button = $("enter");
     const show = current && !dialogOpen();
     button.hidden = !show;
-    if (show) button.textContent = UI[lang].enter(PLACES[lang][current.id].name);
+    if (show) button.textContent = UI[lang].enter(PLACES[lang][current.id].read);
 }
 function render() {
     const t = UI[lang];
@@ -477,30 +576,44 @@ function render() {
     $("jump").title = t.jump;
     $("steps").setAttribute("aria-label", t.steps);
     document.querySelectorAll(".lang button").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.lang === lang)));
-    placeDefs.forEach((p, i) => {
-        const name = PLACES[lang][p.id].name;
-        p.label.textContent = name;
-        p.step.title = name;
-        p.step.setAttribute("aria-label", `${i + 1}. ${name}`);
+    $("intro-plan").replaceChildren(...chapterDefs.map((c) => {
+        const item = document.createElement("li");
+        item.textContent = CHAPTERS[lang][c.id];
+        return item;
+    }));
+    placeDefs.forEach((p) => {
+        const place = PLACES[lang][p.id];
+        p.label.innerHTML = `<small>${place.kicker}</small>${place.name}`;
     });
+    chapterDefs.forEach((c, i) => {
+        const name = CHAPTERS[lang][c.id];
+        c.step.querySelector(".step-name").textContent = name;
+        c.step.title = name;
+        c.step.setAttribute("aria-label", `${i + 1}. ${name}`);
+    });
+    drawSigns();
     renderProgress();
     renderEnter();
     renderScore();
 }
 
-placeDefs.forEach((p, i) => {
+// Sommaire : un bouton par chapitre, qui mène à sa première étape.
+chapterDefs.forEach((c, i) => {
+    c.step = document.createElement("button");
+    c.step.type = "button";
+    c.step.className = "step";
+    c.step.innerHTML = `<span class="step-n">${i + 1}</span><span class="step-name"></span>`;
+    c.step.addEventListener("click", () => { targetPlace = c.stops[0]; });
+    $("steps").append(c.step);
+});
+
+placeDefs.forEach((p) => {
     p.label = document.createElement("button");
     p.label.type = "button";
     p.label.className = "label";
     p.label.tabIndex = -1; // Au clavier, c'est la liste d'étapes qui sert de navigation.
     p.label.addEventListener("click", () => { targetPlace = p; });
     $("labels").append(p.label);
-    p.step = document.createElement("button");
-    p.step.type = "button";
-    p.step.className = "step";
-    p.step.textContent = i + 1;
-    p.step.addEventListener("click", () => { targetPlace = p; });
-    $("steps").append(p.step);
 });
 
 document.querySelectorAll(".lang button").forEach((b) => b.addEventListener("click", () => {
@@ -546,10 +659,8 @@ function holdButton(button, direction) {
     // Activation au clavier (Tab puis Entrée) : va directement à l'étape suivante dans ce sens.
     button.addEventListener("click", (e) => {
         if (e.detail !== 0) return;
-        const n = placeDefs.length;
-        const from = (position / (Math.PI * 2)) * n;
-        const index = direction > 0 ? Math.floor(from + 0.01) + 1 : Math.ceil(from - 0.01) - 1;
-        targetPlace = placeDefs[((index % n) + n) % n];
+        const ahead = (p) => { const d = shortest(p.angle - position) * direction; return d > 0.02 ? d : d + Math.PI * 2; };
+        targetPlace = placeDefs.reduce((best, p) => (ahead(p) < ahead(best) ? p : best));
     });
 }
 holdButton($("back"), -1);
@@ -630,8 +741,8 @@ function step(dt, time) {
     if (closest !== current) {
         current = closest;
         renderEnter();
-        renderProgress();
     }
+    renderProgress();
 
     if (motionOk) {
         const swing = moving && height === 0 ? Math.sin(walkTime * 15) * 0.65 : height > 0 ? 0.5 : 0;
@@ -659,5 +770,7 @@ function frame(now) {
 }
 
 render();
+// La police du site n'est peut-être pas encore chargée au premier dessin des panneaux.
+document.fonts?.load("600 100px Fraunces").then(drawSigns);
 introDialog.showModal();
 requestAnimationFrame(frame);

@@ -43,15 +43,17 @@ button { font: inherit; color: inherit; cursor: pointer; }
 
 #labels { position: fixed; inset: 0; z-index: 2; pointer-events: none; overflow: hidden; }
 .label[hidden] { display: none; }
+.label small { display: block; font-size: 11px; font-weight: 600; color: var(--accent); }
+.label:hover small { color: inherit; }
 .label {
     position: absolute; left: 0; top: 0; pointer-events: auto; white-space: nowrap;
-    min-height: 36px; padding: 6px 12px; font-size: 14px; font-weight: 600;
+    min-height: 36px; padding: 4px 12px; font-size: 14px; line-height: 1.25; text-align: left; font-weight: 600;
     background: var(--paper); border: 2px solid var(--ink);
     will-change: transform;
 }
 .label:hover { background: var(--ink); color: var(--paper); }
 .label.is-visited { border-color: var(--rule); color: var(--muted); }
-.label.is-visited::before { content: "✓ "; color: var(--accent); }
+.label.is-visited small::before { content: "✓ "; }
 .label.is-visited:hover { background: var(--paper); color: var(--ink); border-color: var(--ink); }
 
 .pop {
@@ -81,9 +83,11 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .pad:active { background: var(--accent); border-color: var(--accent); color: #fff; }
 .steps { display: flex; gap: 4px; padding: 0 8px; }
 .step {
-    width: 40px; height: 44px; font-size: 14px; font-weight: 600; font-variant-numeric: tabular-nums;
-    background: var(--paper); border: 2px solid var(--ink);
+    display: flex; align-items: center; gap: 6px; min-width: 40px; height: 44px; padding: 0 10px; font-size: 14px; font-weight: 600;
+    white-space: nowrap; background: var(--paper); border: 2px solid var(--ink);
 }
+.step-n { font-variant-numeric: tabular-nums; }
+.step .step-n::after { content: "."; }
 .step:hover { background: var(--ink); color: var(--paper); }
 .step.is-visited { background: #e0ddd2; color: var(--muted); border-color: var(--rule); }
 .step.is-current { background: var(--accent); color: #fff; border-color: var(--accent); }
@@ -100,6 +104,9 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .panel ul { margin: 8px 0 0; padding-left: 20px; }
 .panel li + li { margin-top: 6px; }
 .panel p { margin: 10px 0 0; }
+.plan { columns: 2; column-gap: 24px; font-weight: 600; }
+.panel-intro .plan { margin-top: 10px; }
+.panel .kicker { color: var(--accent); font-weight: 700; }
 .panel .kicker, .panel .meta { font-size: 14px; color: var(--muted); margin: 0 0 6px; }
 .controls { color: var(--muted); font-size: 15px; }
 .primary, .action {
@@ -122,6 +129,15 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .fallback[hidden] { display: none; }
 .fallback h1 { font: 600 26px/1.2 var(--serif); margin: 0; }
 
+/* Pas assez de place pour tous les noms : seul le chapitre en cours garde le sien. */
+@media (max-width: 1080px) {
+    .step { justify-content: center; padding: 0 8px; }
+    .step-name { display: none; }
+    .step.is-current .step-name { display: inline; }
+    .step .step-n::after { content: none; }
+    .step.is-current .step-n::after { content: "."; }
+}
+
 @media (max-width: 560px) {
     .hud-id strong { font-size: 17px; }
     .panel { padding: 22px 18px 26px; }
@@ -130,7 +146,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
     .hint { display: none; }
     .controls-row { flex-wrap: wrap; }
     .steps { order: -1; flex-basis: 100%; justify-content: center; padding: 0; }
-    .step { width: 38px; height: 40px; }
+    .step { min-width: 36px; height: 40px; padding: 0 6px; font-size: 13px; }
     .pad { flex: 1; }
     .enter { bottom: calc(max(14px, env(safe-area-inset-bottom)) + 116px); }
 }
