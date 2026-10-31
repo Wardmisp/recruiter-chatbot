@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Rémi Mialon-Evan — Le parcours en 3D</title>
+    <meta name="robots" content="noindex">
+    <meta name="description" content="Explorez le parcours de Rémi Mialon-Evan, ingénieur mobile Android / Kotlin, dans un petit monde en 3D.">
+    <link rel="icon" href="../favicon.svg" type="image/svg+xml">
+    <link rel="preload" href="../fonts/fraunces-600.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="stylesheet" href="monde.css">
+</head>
+<body>
+    <canvas id="scene" aria-hidden="true"></canvas>
+
+    <header class="hud">
+        <div class="hud-id">
+            <strong>Rémi Mialon-Evan</strong>
+            <span id="progress" role="status"></span>
+            <span class="score"><b id="xp"></b> · <span id="bones"></span></span>
+            <button type="button" id="bonus" class="bonus" hidden></button>
+        </div>
+        <nav class="hud-nav">
+            <a href="../" id="classic">Mode classique</a>
+            <div class="lang" role="group" aria-label="Langue / Language">
+                <button type="button" data-lang="fr">FR</button>
+                <button type="button" data-lang="en">EN</button>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Noms des lieux : suivent la scène et servent aussi de navigation au clavier. -->
+    <div id="labels"></div>
+
+    <button type="button" id="enter" class="enter" hidden></button>
+
+    <div class="controls-bar">
+        <p id="hint" class="hint"></p>
+        <div class="controls-row">
+            <button type="button" id="back" class="pad"><span aria-hidden="true">←</span></button>
+            <nav id="steps" class="steps"></nav>
+            <button type="button" id="jump" class="pad pad-jump"><span aria-hidden="true">↑</span></button>
+            <button type="button" id="forward" class="pad"><span aria-hidden="true">→</span></button>
+        </div>
+    </div>
+
+    <dialog id="intro" class="panel panel-intro">
+        <p class="kicker" id="intro-kicker"></p>
+        <h1 id="intro-title"></h1>
+        <p id="intro-text"></p>
+        <p class="controls" id="intro-controls"></p>
+        <form method="dialog"><button class="primary" id="intro-start"></button></form>
+    </dialog>
+
+    <dialog id="place" class="panel">
+        <button type="button" class="close" id="place-close"></button>
+        <div id="place-body"></div>
+    </dialog>
+
+    <div id="fallback" class="fallback" hidden>
+        <h1 id="fallback-title"></h1>
+        <p><a href="../" id="fallback-link"></a></p>
+    </div>
+    <noscript><p class="fallback">Le monde 3D a besoin de JavaScript. <a href="../">Voir le site classique</a>.</p></noscript>
+
+    <script type="module" src="monde.js"></script>
+</body>
+</html>
